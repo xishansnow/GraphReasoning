@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d4" for="edge" attr.name="width" attr.type="double"/>
+<key id="d3" for="edge" attr.name="title" attr.type="string"/>
+<key id="d2" for="node" attr.name="size" attr.type="long"/>
+<key id="d1" for="node" attr.name="color" attr.type="string"/>
+<key id="d0" for="node" attr.name="group" attr.type="long"/>
+<graph edgedefault="undirected"><node id="beta-sheets">
+  <data key="d0">1</data>
+  <data key="d1">#57d3db</data>
+  <data key="d2">2</data>
+</node>
+<node id="silk">
+  <data key="d0">2</data>
+  <data key="d1">#db5f57</data>
+  <data key="d2">2</data>
+</node>
+<node id="strength">
+  <data key="d0">1</data>
+  <data key="d1">#57d3db</data>
+  <data key="d2">1</data>
+</node>
+<node id="protein fiber">
+  <data key="d0">2</data>
+  <data key="d1">#db5f57</data>
+  <data key="d2">1</data>
+</node>
+<edge source="beta-sheets" target="strength">
+  <data key="d3">provides,provides</data>
+  <data key="d4">2.0</data>
+</edge>
+<edge source="beta-sheets" target="silk">
+  <data key="d3">contains,contains</data>
+  <data key="d4">2.0</data>
+</edge>
+<edge source="silk" target="protein fiber">
+  <data key="d3">is,is</data>
+  <data key="d4">2.0</data>
+</edge>
+</graph></graphml>

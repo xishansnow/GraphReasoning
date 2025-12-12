@@ -1,0 +1,4 @@
+,node_1,node_2,edge_list,weight_list
+0,beta-sheets,strength,"provides,provides",2.0
+1,silk,beta-sheets,"contains,contains",2.0
+2,silk,protein fiber,"is,is",2.0

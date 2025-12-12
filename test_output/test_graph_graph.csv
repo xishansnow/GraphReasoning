@@ -1,0 +1,7 @@
+node_1|node_2|edge|chunk_id
+silk|protein fiber|is|f1829bfa722c4f3a8afcba442635aadb
+beta-sheets|strength|provides|f1829bfa722c4f3a8afcba442635aadb
+silk|beta-sheets|contains|f1829bfa722c4f3a8afcba442635aadb
+silk|protein fiber|is|3d62bc330ea1497b90a97a075d805d65
+beta-sheets|strength|provides|3d62bc330ea1497b90a97a075d805d65
+silk|beta-sheets|contains|3d62bc330ea1497b90a97a075d805d65

@@ -1,0 +1,41 @@
+[project]
+name = "graphreasoning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+        'numpy',
+        'networkx',
+        'matplotlib',
+        'pandas',
+        'transformers>=4.39',
+        'powerlaw',
+        'markdown2',
+        'pdfkit',
+        'unstructured',
+        'bitsandbytes',
+        'peft',
+        'accelerate',
+        'torch',
+        'torchvision',
+        'torchaudio',
+        'huggingface_hub',
+        'langchain-community',
+        'langchain',
+        'pyvis',
+        'yachalk',
+        'pytesseract',
+        'llama-index',
+        'tqdm',
+        'ipython',
+        'scikit-learn',
+        'scipy',
+        'seaborn',
+        'uuid',
+        'pdfminer.six',
+        'community',
+        'guidance',
+        'python-louvain',
+        'wkhtmltopdf'
+        ]
