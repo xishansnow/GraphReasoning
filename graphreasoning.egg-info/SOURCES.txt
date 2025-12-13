@@ -7,7 +7,9 @@ GraphReasoning/agents.py
 GraphReasoning/graph_analysis.py
 GraphReasoning/graph_generation.py
 GraphReasoning/graph_tools.py
+GraphReasoning/llm_providers.py
 GraphReasoning/openai_tools.py
+GraphReasoning/prompt_templates.py
 GraphReasoning/utils.py
 graphreasoning.egg-info/PKG-INFO
 graphreasoning.egg-info/SOURCES.txt

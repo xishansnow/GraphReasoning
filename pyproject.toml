@@ -33,9 +33,17 @@ dependencies = [
         'scipy',
         'seaborn',
         'uuid',
-        'pdfminer.six',
+        "pdfminer-six",
         'community',
         'guidance',
         'python-louvain',
-        'wkhtmltopdf'
-        ]
+        'wkhtmltopdf',
+        "ipykernel>=7.1.0",
+        "llama-cpp-python>=0.3.16",
+        "pdfminer>=20191125",
+        "s2sphere",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true

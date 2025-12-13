@@ -4,6 +4,14 @@ Prompt Template Usage Examples and Documentation.
 This file shows how to use and customize the prompt template system.
 """
 
+from pathlib import Path
+import sys
+
+# Ensure project root is importable when running this file directly
+_PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if str(_PROJECT_ROOT) not in sys.path:
+    sys.path.insert(0, str(_PROJECT_ROOT))
+
 from GraphReasoning.prompt_templates import (
     render_prompt,
     add_custom_template,

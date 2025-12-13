@@ -1,6 +1,6 @@
 from typing import Callable, Optional, Dict, Any
 
-# Unified signature for generate callables
+# Unified signature for `generate()` callables
 # generate(system_prompt: str, prompt: str, **kwargs) -> str
 
 
@@ -20,6 +20,7 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
     config = config or {}
     provider = provider.lower()
 
+    # OpenAI official API
     if provider == "openai":
         # Uses generate_OpenAIGPT from openai_tools
         from GraphReasoning.openai_tools import generate_OpenAIGPT
@@ -41,6 +42,7 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
 
         return generate
 
+    # Custom OpenAI-compatible servers
     if provider in ("deepseek", "qwen"):
         # OpenAI-compatible servers: require base_url and api_key
         import requests
@@ -74,6 +76,47 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
 
         return generate
 
+    # Local OpenAI-compatible servers: ollama, lm_studio
+    if provider in ("ollama", "lm_studio"):
+        # Both expose OpenAI-compatible /v1/chat/completions endpoints locally.
+        # Example configs:
+        #   Ollama:   base_url='http://localhost:11434/v1', api_key='ollama'
+        #   LMStudio: base_url='http://localhost:1234/v1',  api_key='lm-studio'
+        import requests
+
+        base_url = config.get("base_url")
+        api_key = config.get("api_key", "")  # Some local servers accept any token
+        model = config.get("model")
+        if not base_url or not model:
+            raise ValueError("For provider ollama/lm_studio, base_url and model are required")
+
+        def generate(system_prompt: str, prompt: str, **kwargs) -> str:
+            headers = {
+                "Content-Type": "application/json",
+            }
+            # Include Authorization only if provided
+            if api_key:
+                headers["Authorization"] = f"Bearer {api_key}"
+
+            payload = {
+                "model": model,
+                "messages": [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": prompt},
+                ],
+                "temperature": kwargs.get("temperature", 0.2),
+                "max_tokens": kwargs.get("max_tokens", 2048),
+                "top_p": kwargs.get("top_p", 1.0),
+            }
+            url = base_url.rstrip("/") + "/chat/completions"
+            resp = requests.post(url, json=payload, headers=headers, timeout=kwargs.get("timeout", 120))
+            resp.raise_for_status()
+            data = resp.json()
+            return data["choices"][0]["message"]["content"]
+
+        return generate
+
+    # Local llama.cpp via guidance
     if provider == "llama_cpp":
         # Local llama.cpp via guidance
         try:
@@ -97,6 +140,7 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
 
         return generate
 
+    # Local HF transformers text-generation
     if provider == "transformers":
         # Local HF transformers text-generation
         from transformers import AutoModelForCausalLM, AutoTokenizer

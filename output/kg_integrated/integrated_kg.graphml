@@ -1,0 +1,268 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd"><key id="d1" for="edge" attr.name="label" attr.type="string"/>
+<key id="d0" for="edge" attr.name="relation" attr.type="string"/>
+<graph edgedefault="directed"><node id="cdl_879fa5d"/>
+<node id="CDLCell"/>
+<node id="12"/>
+<node id="7"/>
+<node id="1.56"/>
+<node id="crop_1"/>
+<node id="CropType"/>
+<node id="Corn"/>
+<node id="crop_corn"/>
+<node id="42.9"/>
+<node id="0.67"/>
+<node id="crop_soybeans"/>
+<node id="28.6"/>
+<node id="0.44"/>
+<node id="crop_forest"/>
+<node id="0.98"/>
+<node id="cdl_879fa5b"/>
+<node id="5"/>
+<node id="1.11"/>
+<node id="crop_24"/>
+<node id="Winter wheat"/>
+<node id="crop_winter_wheat"/>
+<node id="40.0"/>
+<node id="crop_alfalfa"/>
+<node id="20.0"/>
+<node id="0.22"/>
+<node id="crop_unknown_(176)"/>
+<node id="crop_developed_open_space"/>
+<node id="0.96"/>
+<node id="soil_89c25a3"/>
+<node id="SoilCell"/>
+<node id="SSURGO"/>
+<node id="feature:type=ssurgo_map_unit"/>
+<node id="pH:weighted:mean=6.2"/>
+<node id="sand:percent:weighted:mean=60.0"/>
+<node id="clay:percent:weighted:mean=10.0"/>
+<node id="mukey=123001"/>
+<node id="components:count=1.0"/>
+<node id="soil_89c2599"/>
+<node id="pH:weighted:mean=6.7"/>
+<node id="sand:percent:weighted:mean=31.0"/>
+<node id="clay:percent:weighted:mean=29.0"/>
+<node id="mukey=123003"/>
+<node id="components:count=2.0"/>
+<edge source="cdl_879fa5d" target="CDLCell">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="cdl_879fa5d" target="12">
+  <data key="d0">attr:dggs_level</data>
+  <data key="d1">attr:dggs_level</data>
+</edge>
+<edge source="cdl_879fa5d" target="7">
+  <data key="d0">attr:total_pixels</data>
+  <data key="d1">attr:total_pixels</data>
+</edge>
+<edge source="cdl_879fa5d" target="1.56">
+  <data key="d0">attr:total_area_acres</data>
+  <data key="d1">attr:total_area_acres</data>
+</edge>
+<edge source="cdl_879fa5d" target="crop_1">
+  <data key="d0">has_dominant_crop</data>
+  <data key="d1">has_dominant_crop</data>
+</edge>
+<edge source="cdl_879fa5d" target="crop_corn">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5d" target="crop_soybeans">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5d" target="crop_forest">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5d" target="0.98">
+  <data key="d0">crop_diversity</data>
+  <data key="d1">crop_diversity</data>
+</edge>
+<edge source="crop_1" target="CropType">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="crop_1" target="Corn">
+  <data key="d0">name</data>
+  <data key="d1">name</data>
+</edge>
+<edge source="crop_corn" target="42.9">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_corn" target="0.67">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="crop_soybeans" target="28.6">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_soybeans" target="0.44">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="crop_forest" target="28.6">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_forest" target="0.44">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="cdl_879fa5b" target="CDLCell">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="cdl_879fa5b" target="12">
+  <data key="d0">attr:dggs_level</data>
+  <data key="d1">attr:dggs_level</data>
+</edge>
+<edge source="cdl_879fa5b" target="5">
+  <data key="d0">attr:total_pixels</data>
+  <data key="d1">attr:total_pixels</data>
+</edge>
+<edge source="cdl_879fa5b" target="1.11">
+  <data key="d0">attr:total_area_acres</data>
+  <data key="d1">attr:total_area_acres</data>
+</edge>
+<edge source="cdl_879fa5b" target="crop_24">
+  <data key="d0">has_dominant_crop</data>
+  <data key="d1">has_dominant_crop</data>
+</edge>
+<edge source="cdl_879fa5b" target="crop_winter_wheat">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5b" target="crop_alfalfa">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5b" target="crop_unknown_(176)">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5b" target="crop_developed_open_space">
+  <data key="d0">contains_crop</data>
+  <data key="d1">contains_crop</data>
+</edge>
+<edge source="cdl_879fa5b" target="0.96">
+  <data key="d0">crop_diversity</data>
+  <data key="d1">crop_diversity</data>
+</edge>
+<edge source="crop_24" target="CropType">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="crop_24" target="Winter wheat">
+  <data key="d0">name</data>
+  <data key="d1">name</data>
+</edge>
+<edge source="crop_winter_wheat" target="40.0">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_winter_wheat" target="0.44">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="crop_alfalfa" target="20.0">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_alfalfa" target="0.22">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="crop_unknown_(176)" target="20.0">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_unknown_(176)" target="0.22">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="crop_developed_open_space" target="20.0">
+  <data key="d0">percentage</data>
+  <data key="d1">percentage</data>
+</edge>
+<edge source="crop_developed_open_space" target="0.22">
+  <data key="d0">area_acres</data>
+  <data key="d1">area_acres</data>
+</edge>
+<edge source="soil_89c25a3" target="SoilCell">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="soil_89c25a3" target="12">
+  <data key="d0">attr:dggs_level</data>
+  <data key="d1">attr:dggs_level</data>
+</edge>
+<edge source="soil_89c25a3" target="SSURGO">
+  <data key="d0">attr:source</data>
+  <data key="d1">attr:source</data>
+</edge>
+<edge source="soil_89c25a3" target="feature:type=ssurgo_map_unit">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c25a3" target="pH:weighted:mean=6.2">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c25a3" target="sand:percent:weighted:mean=60.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c25a3" target="clay:percent:weighted:mean=10.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c25a3" target="mukey=123001">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c25a3" target="components:count=1.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="SoilCell">
+  <data key="d0">rdf:type</data>
+  <data key="d1">rdf:type</data>
+</edge>
+<edge source="soil_89c2599" target="12">
+  <data key="d0">attr:dggs_level</data>
+  <data key="d1">attr:dggs_level</data>
+</edge>
+<edge source="soil_89c2599" target="SSURGO">
+  <data key="d0">attr:source</data>
+  <data key="d1">attr:source</data>
+</edge>
+<edge source="soil_89c2599" target="feature:type=ssurgo_map_unit">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="pH:weighted:mean=6.7">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="sand:percent:weighted:mean=31.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="clay:percent:weighted:mean=29.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="mukey=123003">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+<edge source="soil_89c2599" target="components:count=2.0">
+  <data key="d0">soil_property</data>
+  <data key="d1">soil_property</data>
+</edge>
+</graph></graphml>

@@ -8,6 +8,74 @@ This library provides all codes and libraries used in the paper: https://arxiv.o
 
 ![image](https://github.com/lamm-mit/GraphReasoning/assets/101393859/3baa3752-8222-4857-a64c-c046693d6315)
 
+---
+
+## 🆕 DGGS Package (Discrete Global Grid System)
+
+This repository now includes a **standalone DGGS package** for spatial data discretization and knowledge graph integration, implementing methodologies from the paper:
+
+> **"The S2 Hierarchical Discrete Global Grid as a Nexus for Data Representation, Integration, and Querying Across Geospatial Knowledge Graphs"**
+
+### Quick Start
+
+```python
+# Value-based discretization (with data aggregation)
+from DGGS import discretize_aggregate
+
+sensors = [
+    {"lat": 40.7, "lon": -74.0, "temperature": 25, "pm25": 35},
+    {"lat": 40.7001, "lon": -74.0001, "temperature": 26, "pm25": 42}
+]
+
+result = discretize_aggregate(
+    sensors, 
+    value_fields=["temperature", "pm25"],
+    level=11,
+    agg_funcs={"temperature": "mean", "pm25": "max"}
+)
+# {"89c25a": {"temperature_mean": 25.5, "pm25_max": 42, "count": 2}}
+
+# Geometric discretization (spatial indexing)
+from DGGS import discretize_points
+
+pois = [
+    {"id": "restaurant_1", "lat": 40.7, "lon": -74.0},
+    {"id": "park_2", "lat": 40.71, "lon": -74.01}
+]
+
+result = discretize_points(pois, level=12)
+# {"restaurant_1": "89c25a1", "park_2": "89c25b2"}
+```
+
+### DGGS Features
+
+- **Value-Based Discretization** (`DGGS/discretize.py`): Aggregate data values onto DGGS cells
+  - Direct assignment, statistical aggregation, multi-scale analysis
+  - Weighted aggregation, spatial interpolation (IDW, nearest-neighbor)
+  
+- **Geometric Discretization** (`DGGS/geometry.py`): Pure spatial mapping
+  - Point, path, polygon, buffer discretization
+  - GeoJSON support, strict polygon coverage
+
+- **Domain-Specific Discretization**:
+  - **SSURGO Soil Data** (`DGGS/ssurgo.py`): Component-weighted soil property aggregation
+  - **CDL Cropland Data** (`DGGS/cdl.py`): Crop distribution, rotation patterns, agricultural intensity
+
+- **Topology Enrichment** (`DGGS/topo_enrichment.py`): Build spatial knowledge graphs
+
+### Documentation
+
+- 📖 [DGGS Value Discretization Guide](DGGS_DISCRETIZATION_GUIDE.md) - Complete API reference
+- 📖 [DGGS Module Structure](DGGS_MODULE_STRUCTURE.md) - Architecture overview
+- 📖 [SSURGO Soil Discretization Guide](SSURGO_DISCRETIZATION_GUIDE.md) - Soil data analysis
+- 📖 [CDL Crop Discretization Guide](CDL_DISCRETIZATION_GUIDE.md) - Cropland data analysis
+- 💻 [Discretization Examples](discretization_examples.py) - Value aggregation demos
+- 💻 [Geometry Examples](geometry_examples.py) - Spatial indexing demos
+- 💻 [SSURGO Examples](ssurgo_examples.py) - Soil data examples
+- 💻 [CDL Examples](cdl_examples.py) - Cropland data examples
+
+---
+
 # Installation and Examples
 
 Install directly from GitHub:
@@ -137,7 +205,8 @@ path_list, path_string, path
 4. [Graph Tools](#graph-tools)
    - [Node Embeddings](#node-embeddings)
    - [Graph Visualization](#graph-visualization)
-   - [Graph Statistics, Exporting/Rendering, and Plots](#graph-statistics-and-plots)
+   - [Graph Statistics, Exporting/Rendering, and Plots](#gr
+...     )aph-statistics-and-plots)
    - [Graph Simplification](#graph-simplification)
 5. [Conversational Agents](#conversational-agents)
    - [ConversationAgent Class](#conversationagent-class)
@@ -145,6 +214,7 @@ path_list, path_string, path
    - [Conversation Summarization](#conversation-summarization)
    - [Question Answering with Agents](#question-answering-with-agents)
 6. [Full API](#full_api)
+7. [DGGS (S2)](#dggs)
 
 ## Introduction <a name="introduction"></a>
 
@@ -198,6 +268,95 @@ The `graph_tools.py` file offers various tools for working with graphs, includin
 - `save_embeddings`: Saves node embeddings to a file.
 - `load_embeddings`: Loads node embeddings from a file.
 - `find_best_fitting_node`: Finds the best fitting node for a given keyword.
+
+## DGGS (S2) <a name="dggs"></a>
+
+`GraphReasoning.dggs.DGGSS2` provides S2-based discrete global grid utilities with hierarchical cell support, adjacency graphs, and multi-scale relationships inspired by ["The S2 Hierarchical Discrete Global Grid as a Nexus for Data Representation, Integration, and Querying Across Geospatial Knowledge Graphs"](https://doi.org/10.3390/ijgi11090503).
+
+### Basic Usage
+
+Map entities to cells and build an adjacency graph:
+
+```python
+from GraphReasoning.dggs import DGGSS2
+
+grid = DGGSS2(level=12)
+entities = [
+    {"id": "site_a", "lat": 42.3601, "lon": -71.0589, "name": "Boston"},
+    {"id": "site_b", "lat": 37.7749, "lon": -122.4194, "name": "San Francisco"},
+]
+G = grid.attach_entities(entities)
+print(grid.latlon_to_token(42.3601, -71.0589))
+```
+
+### Covering Regions
+
+- Rectangle: `grid.cover_rectangle((lat_sw, lon_sw), (lat_ne, lon_ne), level=10)`
+- Circular cap: `grid.cover_cap(lat, lon, radius_km=50, level=12)`
+
+### Hierarchical (Multi-Scale) Relationships
+
+S2 cells form a hierarchical structure. Each cell has a parent at a coarser level and children at finer levels:
+
+```python
+# Get parent cell (coarser resolution)
+parent_token = grid.parent(token, parent_level=10)
+
+# Get children cells (finer resolution)
+children_tokens = grid.children(token, child_level=14)
+
+# Build hierarchical graph with parent-child and adjacency relations
+cells = grid.cover_cap(42.36, -71.05, radius_km=10, level=12)
+H = grid.build_hierarchical_graph(cells, include_parents=True, include_children=False)
+
+# H is a DiGraph with edge types: 'adjacent', 'parent_of', 'child_of'
+# Query cross-scale relationships
+for u, v, data in H.edges(data=True):
+    if data['relation'] == 'parent_of':
+        print(f"{u} is parent of {v}")
+```
+
+**Key Methods:**
+- `parent(token, parent_level)`: Get parent cell at coarser level
+- `children(token, child_level)`: Get all children cells at finer level
+- `neighbors(token, ring=1)`: Get adjacent cells at same level
+- `build_cell_graph(tokens)`: Build undirected graph with same-level adjacencies
+- `build_hierarchical_graph(tokens, include_parents, include_children)`: Build directed graph with parent-child and adjacency edges across multiple scales
+
+### Spatial Topology and Directional Relationships
+
+Analyze spatial relationships between geographic entities:
+
+```python
+# Check topology relationship between two cells
+relation = grid.spatial_relation(token1, token2)
+# Returns: 'equal', 'contains', 'within', 'adjacent', or 'disjoint'
+
+# Calculate distance and direction
+distance = grid.distance_km(lat1, lon1, lat2, lon2)
+direction = grid.cardinal_direction(lat1, lon1, lat2, lon2)  # N, NE, E, SE, S, SW, W, NW
+
+# Comprehensive entity relationship analysis
+entity1 = {"id": "A", "lat": 42.36, "lon": -71.05}
+entity2 = {"id": "B", "lat": 42.37, "lon": -71.06}
+relation = grid.entity_relation(entity1, entity2, level=12, distance_threshold_km=3.0)
+# Returns: {'topology': 'adjacent', 'direction': 'NE', 'distance_km': 1.234, 'proximity': 'near', ...}
+
+# Find entities within range
+nearby = grid.find_entities_in_range(entities, center_lat=42.36, center_lon=-71.05, radius_km=5.0)
+```
+
+**Spatial Analysis Methods:**
+- `spatial_relation(token1, token2)`: Topology relationship (equal/contains/within/adjacent/disjoint)
+- `distance_km(lat1, lon1, lat2, lon2)`: Great circle distance in kilometers
+- `bearing(lat1, lon1, lat2, lon2)`: Initial bearing in degrees (0-360)
+- `cardinal_direction(lat1, lon1, lat2, lon2)`: Cardinal direction (N/NE/E/SE/S/SW/W/NW)
+- `entity_relation(entity1, entity2, level, distance_threshold)`: Comprehensive spatial analysis
+- `find_entities_in_range(entities, center, radius)`: Proximity-based spatial search
+- `analyze_entity_relationships(entities, level, threshold)`: Batch pairwise relationship analysis
+
+See `DGGS_HIERARCHICAL.md` for detailed examples and `examples/dggs_examples.py` for runnable demonstrations.
+
 - `find_best_fitting_node_list`: Finds the N best fitting nodes for a given keyword.
 
 ### Graph Visualization <a name="graph-visualization"></a>
