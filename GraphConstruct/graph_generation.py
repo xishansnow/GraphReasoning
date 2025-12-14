@@ -124,6 +124,7 @@ def extract (string, start='[', end=']'):
      
     return string[start_index :end_index+1]
 
+# Convert list of document chunks to dataframe
 def documents2Dataframe(documents) -> pd.DataFrame:
     """Convert list of documents to dataframe.
     Args:
@@ -143,6 +144,7 @@ def documents2Dataframe(documents) -> pd.DataFrame:
     df = pd.DataFrame(rows)
     return df
 
+# Convert list of concepts to dataframe
 def concepts2Df(concepts_list) -> pd.DataFrame:
     """Convert list of concepts to dataframe.
     Args:
@@ -158,7 +160,7 @@ def concepts2Df(concepts_list) -> pd.DataFrame:
 
     return concepts_dataframe
 
-
+# Convert dataframe to list of graph triplets
 def df2Graph(dataframe: pd.DataFrame, generate, repeat_refine=0, verbatim=False,
           
             ) -> list:
@@ -184,6 +186,7 @@ def df2Graph(dataframe: pd.DataFrame, generate, repeat_refine=0, verbatim=False,
     return concept_list
 
 
+# Convert list of graph triplets to dataframe
 def graph2Df(nodes_list) -> pd.DataFrame:
     """Convert list of graph triplets to dataframe.
     Args:
@@ -205,6 +208,199 @@ sys.path.append("..")
 import json
 from Llms.prompt_templates import render_prompt
 
+
+####################################################################
+# Schema and Ontology Support
+####################################################################
+
+class GraphSchema:
+    """
+    Define a schema/ontology for knowledge graphs.
+    Ensures consistency and validity of extracted triples.
+    """
+    
+    def __init__(self, entity_types: dict = None, relation_types: dict = None):
+        """
+        Initialize schema with allowed entity and relation types.
+        
+        Args:
+            entity_types (dict): Mapping of entity type names to allowed properties
+                Example: {
+                    "Person": {"properties": ["name", "age", "occupation"]},
+                    "Organization": {"properties": ["name", "sector"]},
+                    "Location": {"properties": ["name", "type"]}
+                }
+            relation_types (dict): Mapping of relation names to domain/range constraints
+                Example: {
+                    "works_for": {"domain": "Person", "range": "Organization"},
+                    "located_in": {"domain": ["Organization", "Person"], "range": "Location"}
+                }
+        """
+        # Default schema if none provided
+        if entity_types is None:
+            entity_types = {
+                "Person": {"properties": ["name", "role"]},
+                "Organization": {"properties": ["name", "type"]},
+                "Location": {"properties": ["name", "type"]},
+                "Concept": {"properties": ["name", "definition"]},
+                "Event": {"properties": ["name", "date"]},
+            }
+        
+        if relation_types is None:
+            relation_types = {
+                "works_for": {"domain": "Person", "range": "Organization"},
+                "located_in": {"domain": ["Organization", "Person", "Event"], "range": "Location"},
+                "part_of": {"domain": "Organization", "range": "Organization"},
+                "participated_in": {"domain": "Person", "range": "Event"},
+                "related_to": {"domain": ["Concept", "Person", "Organization"], "range": ["Concept", "Person", "Organization"]},
+            }
+        
+        self.entity_types = entity_types
+        self.relation_types = relation_types
+    
+    def get_entity_types(self) -> list:
+        """Get list of allowed entity types."""
+        return list(self.entity_types.keys())
+    
+    def get_relation_types(self) -> list:
+        """Get list of allowed relation types."""
+        return list(self.relation_types.keys())
+    
+    def validate_entity_type(self, entity_type: str) -> bool:
+        """Check if entity type is in schema."""
+        return entity_type in self.entity_types
+    
+    def validate_relation_type(self, relation_type: str) -> bool:
+        """Check if relation type is in schema."""
+        return relation_type in self.relation_types
+    
+    def validate_triple(self, subject: str, subject_type: str, predicate: str, 
+                       object_: str, object_type: str) -> tuple:
+        """
+        Validate a triple against schema.
+        
+        Returns:
+            (is_valid, error_message)
+        """
+        # Check subject type
+        if not self.validate_entity_type(subject_type):
+            return False, f"Invalid subject type: {subject_type}"
+        
+        # Check predicate type
+        if not self.validate_relation_type(predicate):
+            return False, f"Invalid predicate: {predicate}"
+        
+        # Check object type
+        if not self.validate_entity_type(object_type):
+            return False, f"Invalid object type: {object_type}"
+        
+        # Check domain/range constraints
+        relation_info = self.relation_types[predicate]
+        domain = relation_info.get("domain")
+        range_ = relation_info.get("range")
+        
+        # Validate domain
+        if isinstance(domain, str):
+            domain = [domain]
+        if subject_type not in domain:
+            return False, f"Subject type {subject_type} not in domain of {predicate}"
+        
+        # Validate range
+        if isinstance(range_, str):
+            range_ = [range_]
+        if object_type not in range_:
+            return False, f"Object type {object_type} not in range of {predicate}"
+        
+        return True, "Valid"
+
+
+def validate_and_filter_triples(triples: list, schema: GraphSchema = None, 
+                                verbatim: bool = False) -> list:
+    """
+    Validate and filter triples against schema.
+    
+    Args:
+        triples (list): List of triple dictionaries with keys:
+            ["node_1", "node_2", "edge", "node_1_type", "node_2_type"]
+        schema (GraphSchema): Schema to validate against
+        verbatim (bool): Whether to print validation details
+    
+    Returns:
+        list: Filtered list of valid triples
+    """
+    if schema is None:
+        schema = GraphSchema()
+    
+    valid_triples = []
+    invalid_count = 0
+    
+    for triple in triples:
+        # Extract triple components
+        subject = triple.get("node_1", "")
+        object_ = triple.get("node_2", "")
+        predicate = triple.get("edge", "")
+        
+        # Use provided types or default to "Concept"
+        subject_type = triple.get("node_1_type", "Concept")
+        object_type = triple.get("node_2_type", "Concept")
+        
+        # Validate triple
+        is_valid, error_msg = schema.validate_triple(
+            subject, subject_type, predicate, object_, object_type
+        )
+        
+        if is_valid:
+            valid_triples.append(triple)
+        else:
+            invalid_count += 1
+            if verbatim:
+                print(f"❌ Rejected: {subject} ({subject_type}) --{predicate}--> {object_} ({object_type})")
+                print(f"   Reason: {error_msg}")
+    
+    if verbatim:
+        print(f"\n✅ Valid triples: {len(valid_triples)}")
+        print(f"❌ Invalid triples: {invalid_count}")
+    
+    return valid_triples
+
+
+def normalize_entity_names(triples: list, normalize_fn=None) -> list:
+    """
+    Normalize entity names in triples to improve consistency.
+    
+    Args:
+        triples (list): List of triple dictionaries
+        normalize_fn (callable): Custom normalization function, defaults to lowercase + strip
+    
+    Returns:
+        list: Triples with normalized entity names
+    """
+    if normalize_fn is None:
+        normalize_fn = lambda x: str(x).strip().lower()
+    
+    normalized = []
+    seen = {}  # Track normalization mappings
+    
+    for triple in triples:
+        normalized_triple = triple.copy()
+        
+        # Normalize node names
+        node_1 = normalize_fn(triple.get("node_1", ""))
+        node_2 = normalize_fn(triple.get("node_2", ""))
+        
+        normalized_triple["node_1"] = node_1
+        normalized_triple["node_2"] = node_2
+        
+        # Remove duplicates (same triple)
+        triple_key = (node_1, triple.get("edge", ""), node_2)
+        if triple_key not in seen:
+            seen[triple_key] = True
+            normalized.append(normalized_triple)
+    
+    return normalized
+
+
+# Generate graph triplets from text using LLM and prompt templates
 def graphPrompt(input: str, generate, metadata={}, #model="mistral-openorca:latest",
                 repeat_refine=0,verbatim=False,
                )-> list:
@@ -306,6 +502,7 @@ def graphPrompt(input: str, generate, metadata={}, #model="mistral-openorca:late
         result = None
     return result
 
+# Convert list of communities to dataframe with colors
 def colors2Community(communities) -> pd.DataFrame:
     """Assign colors to communities.
     Args:
@@ -326,6 +523,7 @@ def colors2Community(communities) -> pd.DataFrame:
     df_colors = pd.DataFrame(rows)
     return df_colors
 
+# Generate contextual proximity edges from graph dataframe
 def contextual_proximity(df: pd.DataFrame) -> pd.DataFrame:
     """Generate contextual proximity edges from graph dataframe.
     Args:
@@ -363,51 +561,69 @@ def contextual_proximity(df: pd.DataFrame) -> pd.DataFrame:
     dfg2 = dfg2[dfg2["count"] != 1]
     dfg2["edge"] = "contextual proximity"
     return dfg2
-    
-def make_graph_from_text (txt,generate,
+
+# Generate graph from text using LLM and prompt templates    
+def make_graph_from_text (txt, generate,
                           include_contextual_proximity=False,
                           graph_root='graph_root',
-                          chunk_size=2500,chunk_overlap=0,
-                          repeat_refine=0,verbatim=False,
+                          chunk_size=2500, chunk_overlap=0,
+                          repeat_refine=0, verbatim=False,
                           data_dir='./data_output_KG/',
-                          save_PDF=False,#TO DO
+                          save_PDF=False,
                           save_HTML=True,
+                          schema: GraphSchema = None,
+                          validate_against_schema=False,
+                          normalize_entities=True,
                          ):    
-    """Generate graph from text using LLM.
+    """Generate graph from text using LLM with optional schema validation.
+    
     Args:
         txt (str): Text to generate graph from.
         generate (function): Function to generate graph triplets from text.
+        include_contextual_proximity (bool): Whether to include contextual proximity edges.
+        graph_root (str): Root name for output files.
+        chunk_size (int): Size of text chunks.
+        chunk_overlap (int): Overlap between chunks.
+        repeat_refine (int): Number of refinement iterations.
+        verbatim (bool): Print verbose output.
+        data_dir (str): Directory to save output files.
+        save_PDF (bool): Whether to save PDF visualization.
+        save_HTML (bool): Whether to save HTML visualization.
+        schema (GraphSchema): Schema for validation. If None, default schema is used.
+        validate_against_schema (bool): Whether to validate triples against schema.
+        normalize_entities (bool): Whether to normalize entity names.
+        
     Returns:
-        tuple: (graph_HTML, graph_GraphML, G, net, output_pdf) where graph_HTML is the path to the HTML file of the graph,
-               graph_GraphML is the path to the GraphML file of the graph,
-               G is the NetworkX graph object,
-               net is the PyVis network object,
-               output_pdf is the path to the PDF file of the graph (if save_PDF is True, else None)."""
-               
+        tuple: (graph_HTML, graph_GraphML, G, net, output_pdf, validation_stats) 
+    """
+    
     ## data directory
     if not os.path.exists(data_dir):
         os.makedirs(data_dir)     
      
-    outputdirectory = Path(f"./{data_dir}/") #where graphs are stored from graph2df function
+    outputdirectory = Path(f"./{data_dir}/")
+    
+    # Initialize schema if validation is enabled
+    if validate_against_schema and schema is None:
+        schema = GraphSchema()
     
  
     #############################################################
     # Step 1: Split text into chunks
     #############################################################    
     splitter = RecursiveCharacterTextSplitter(
-        #chunk_size=5000, #1500,
-        chunk_size=chunk_size, #1500,
+        chunk_size=chunk_size,
         chunk_overlap=chunk_overlap,
         length_function=len,
         is_separator_regex=False,
     )    
     
     pages = splitter.split_text(txt)
-    print("Number of chunks = ", len(pages))
+    print(f"✅ Number of chunks = {len(pages)}")
     
     # Display first chunk
     if verbatim:
-        display(Markdown (pages[0]) )
+        display(Markdown(pages[0]))
     
     # Convert documents to dataframe
     df = documents2Dataframe(pages)
@@ -415,13 +631,38 @@ def make_graph_from_text (txt,generate,
     #############################################################
     # Step 2: Generate graph from chunks
     #############################################################
-    # Flag to control whether to regenerate graph or load existing one
-    #  Used for Debugging when False.
     regenerate = True
     
     if regenerate:
         # Generate graph from dataframe
-        concepts_list = df2Graph(df,generate,repeat_refine=repeat_refine,verbatim=verbatim) #model='zephyr:latest' )
+        concepts_list = df2Graph(df, generate, repeat_refine=repeat_refine, verbatim=verbatim)
+        
+        #############################################################
+        # Step 2a: Schema Validation and Normalization
+        #############################################################
+        validation_stats = {
+            "total_extracted": len(concepts_list),
+            "after_normalization": len(concepts_list),
+            "after_validation": len(concepts_list),
+        }
+        
+        # Normalize entity names for consistency
+        if normalize_entities:
+            concepts_list = normalize_entity_names(concepts_list)
+            validation_stats["after_normalization"] = len(concepts_list)
+            if verbatim:
+                print(f"✅ After normalization: {len(concepts_list)} triples")
+        
+        # Validate against schema
+        if validate_against_schema and schema:
+            concepts_list = validate_and_filter_triples(concepts_list, schema, verbatim=verbatim)
+            validation_stats["after_validation"] = len(concepts_list)
+        
+        if verbatim:
+            print(f"\n📊 Validation Summary:")
+            print(f"   Total extracted: {validation_stats['total_extracted']}")
+            print(f"   After normalization: {validation_stats['after_normalization']}")
+            print(f"   After validation: {validation_stats['after_validation']}")
         
         # Convert concepts list to dataframe
         dfg1 = graph2Df(concepts_list)
@@ -431,17 +672,22 @@ def make_graph_from_text (txt,generate,
         # Save graph and chunks dataframes to CSV
         dfg1.to_csv(outputdirectory/f"{graph_root}_graph.csv", sep="|", index=False)
         df.to_csv(outputdirectory/f"{graph_root}_chunks.csv", sep="|", index=False)
-        dfg1.to_csv(outputdirectory/f"{graph_root}_graph_clean.csv", )#sep="|", index=False                  
-        df.to_csv(outputdirectory/f"{graph_root}_chunks_clean.csv",  )#sep="|", index=False
+        dfg1.to_csv(outputdirectory/f"{graph_root}_graph_clean.csv")
+        df.to_csv(outputdirectory/f"{graph_root}_chunks_clean.csv")
+        
+        # Save validation stats
+        with open(outputdirectory/f"{graph_root}_validation_stats.json", 'w') as f:
+            json.dump(validation_stats, f, indent=2)
     else:
         dfg1 = pd.read_csv(outputdirectory/f"{graph_root}_graph.csv", sep="|")
+        validation_stats = {}
     
     dfg1.replace("", np.nan, inplace=True)
     dfg1.dropna(subset=["node_1", "node_2", 'edge'], inplace=True)
     dfg1['count'] = 4 
       
     if verbatim:
-        print("Shape of graph DataFrame: ", dfg1.shape)
+        print(f"✅ Shape of graph DataFrame: {dfg1.shape}")
         
     # Display first few rows of graph DataFrame
     dfg1.head()
@@ -452,9 +698,8 @@ def make_graph_from_text (txt,generate,
         dfg2 = contextual_proximity(dfg1)
         # Combine original graph edges with contextual proximity edges
         dfg = pd.concat([dfg1, dfg2], axis=0)
-        #dfg2.tail()
     else:
-        dfg=dfg1
+        dfg = dfg1
         
     # Group and aggregate edges
     dfg = (
@@ -565,26 +810,28 @@ def make_graph_from_text (txt,generate,
     nx.write_graphml(G, graph_GraphML)
     
     if save_HTML:
-        net.show(graph_HTML,
-            )
+        net.show(graph_HTML)
 
     if save_PDF:
         output_pdf=f'{data_dir}/{graph_root}_PDF.pdf'
-        pdfkit.from_file(graph_HTML,  output_pdf)
+        pdfkit.from_file(graph_HTML, output_pdf)
     else:
         output_pdf=None
         
     # Compute graph statistics
-    res_stat=graph_statistics_and_plots_for_large_graphs(G, data_dir=data_dir,include_centrality=False,
-                                                       make_graph_plot=False,)
+    res_stat = graph_statistics_and_plots_for_large_graphs(
+        G, data_dir=data_dir, include_centrality=False, make_graph_plot=False
+    )
         
-    print ("Graph statistics: ", res_stat)
-    return graph_HTML, graph_GraphML, G, net, output_pdf
+    print(f"✅ Graph statistics: {res_stat}")
+    
+    return graph_HTML, graph_GraphML, G, net, output_pdf, validation_stats
 
 import time
 from copy import deepcopy
 import traceback
 
+# Add new subgraph generated from text to an existing graph
 def add_new_subgraph_from_text(txt,generate,node_embeddings,tokenizer, model,
                                original_graph_path_and_fname,
                                data_dir_output='./data_temp/', verbatim=True,

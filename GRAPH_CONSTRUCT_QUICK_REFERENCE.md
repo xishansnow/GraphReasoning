@@ -301,7 +301,7 @@ GraphConstruct/
 ├── document_processor.py        # Document loading/processing
 ├── entity_extractor.py          # Entity extraction
 ├── relationship_extractor.py    # Relationship extraction
-├── kg_builder.py                # Knowledge graph construction
+├── graph_builder.py             # Knowledge graph construction
 └── graph_constructor.py         # Main orchestrator class
 
 examples/

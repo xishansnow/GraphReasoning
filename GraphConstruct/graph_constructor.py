@@ -12,7 +12,7 @@ import json
 from .document_processor import DocumentProcessor, Document
 from .entity_extractor import EntityExtractor, Entity, EntityType
 from .relationship_extractor import RelationshipExtractor, Relationship, RelationType
-from .kg_builder import KnowledgeGraphBuilder, KnowledgeGraph
+from .graph_builder import KnowledgeGraphBuilder, KnowledgeGraph
 
 
 class HistoricalKGBuilder:
@@ -40,7 +40,7 @@ class HistoricalKGBuilder:
         self.document_processor = DocumentProcessor(max_size_mb=max_doc_size_mb)
         self.entity_extractor = EntityExtractor(use_llm=use_llm, llm_provider=llm_provider)
         self.relationship_extractor = RelationshipExtractor(use_llm=use_llm, llm_provider=llm_provider)
-        self.kg_builder = KnowledgeGraphBuilder()
+        self.graph_builder = KnowledgeGraphBuilder()
         
         self.documents: List[Document] = []
         self.entities: List[Entity] = []
@@ -173,7 +173,7 @@ class HistoricalKGBuilder:
                   "Run extract_entities() and extract_relationships() first.")
             return None
         
-        graph = self.kg_builder.create_graph(
+        graph = self.graph_builder.create_graph(
             name=name,
             entities=self.entities,
             relationships=self.relationships
@@ -197,13 +197,13 @@ class HistoricalKGBuilder:
             format: Export format ('json', 'graphml', 'csv', 'rdf')
         """
         if format == 'json':
-            self.kg_builder.export_to_json(graph_name, output_path)
+            self.graph_builder.export_to_json(graph_name, output_path)
         elif format == 'graphml':
-            self.kg_builder.export_to_graphml(graph_name, output_path)
+            self.graph_builder.export_to_graphml(graph_name, output_path)
         elif format == 'csv':
-            self.kg_builder.export_to_csv(graph_name, output_path)
+            self.graph_builder.export_to_csv(graph_name, output_path)
         elif format == 'rdf':
-            self.kg_builder.export_to_rdf(graph_name, output_path)
+            self.graph_builder.export_to_rdf(graph_name, output_path)
         else:
             print(f"❌ Unknown format: {format}")
             print("Supported formats: json, graphml, csv, rdf")
@@ -263,7 +263,7 @@ class HistoricalKGBuilder:
     def get_statistics(self) -> Dict[str, Any]:
         """Get pipeline statistics."""
         graph_stats = {}
-        for name, graph in self.kg_builder.graphs.items():
+        for name, graph in self.graph_builder.graphs.items():
             graph_stats[name] = graph.get_statistics()
         
         return {
