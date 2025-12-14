@@ -18,7 +18,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from DGGS import (
+from Dggs import (
     PolygonFeature,
     PolygonComponent,
     discretize_polygon_features,
@@ -27,7 +27,7 @@ from DGGS import (
     discretize_polygon_hierarchical,
     SpatialEntity,
 )
-from DGGS.dggs import DGGSS2
+from Dggs.dggs import DggsS2
 from typing import Any, Dict, List, Optional, Sequence, Tuple
 import statistics
 
@@ -996,7 +996,7 @@ def example_6_ssurgo_using_generic_api():
     ]
     
     # 方式 1: 使用 SSURGO 专用函数
-    from DGGS import discretize_ssurgo_map_units
+    from Dggs import discretize_ssurgo_map_units
     result_ssurgo = discretize_ssurgo_map_units(map_units, level=12)
     
     print("\n方式 1: SSURGO 专用函数")

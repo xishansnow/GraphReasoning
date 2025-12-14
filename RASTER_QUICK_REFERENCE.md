@@ -10,7 +10,7 @@
 
 ### 1. 分类栅格 (土地覆盖、作物类型)
 ```python
-from DGGS import CategoricalPixel, discretize_raster_categorical
+from Dggs import CategoricalPixel, discretize_raster_categorical
 
 # 创建像素
 pixels = [
@@ -31,7 +31,7 @@ for cell_token, data in result.items():
 
 ### 2. 连续栅格 (温度、高程、降水)
 ```python
-from DGGS import ContinuousPixel, discretize_raster_continuous
+from Dggs import ContinuousPixel, discretize_raster_continuous
 
 # 创建像素
 pixels = [
@@ -52,7 +52,7 @@ for cell_token, data in result.items():
 
 ### 3. 时间序列分析
 ```python
-from DGGS import discretize_raster_temporal
+from Dggs import discretize_raster_temporal
 
 # 准备多年数据
 pixels_by_year = {
@@ -72,7 +72,7 @@ result = discretize_raster_temporal(
 
 ### 4. 变化检测
 ```python
-from DGGS import calculate_raster_change
+from Dggs import calculate_raster_change
 
 # 计算变化
 changes = calculate_raster_change(
@@ -231,7 +231,7 @@ result = discretize_raster_continuous(
 ## 🚀 扩展到新栅格类型
 
 ```python
-from DGGS.discretizer_raster import CategoricalPixel, discretize_raster_categorical
+from Dggs.discretizer_raster import CategoricalPixel, discretize_raster_categorical
 
 # 1. 定义像素类 (可选 - 也可直接使用 CategoricalPixel)
 class MyRasterPixel(CategoricalPixel):

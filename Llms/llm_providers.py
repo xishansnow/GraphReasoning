@@ -1,29 +1,50 @@
-from typing import Callable, Optional, Dict, Any
+"""Unified interface for multiple LLM providers.
 
-# Unified signature for `generate()` callables
-# generate(system_prompt: str, prompt: str, **kwargs) -> str
+This module provides a factory function to get a generate() callable
+for any supported LLM provider with unified interface.
+
+Supported providers:
+- openai: Official OpenAI API
+- deepseek: OpenAI-compatible API
+- qwen: OpenAI-compatible API
+- ollama: Local OpenAI-compatible server
+- lm_studio: Local OpenAI-compatible server
+- llama_cpp: Local llama.cpp via guidance
+- transformers: Local HuggingFace transformers
+"""
+
+from typing import Callable, Optional, Dict, Any
 
 
 def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> Callable:
     """Return a unified generate() callable for the given provider.
 
-    Supported providers:
-    - openai: Official OpenAI API
-    - deepseek: OpenAI-compatible API (base_url required)
-    - qwen: OpenAI-compatible API (base_url required)
-    - llama_cpp: Local llama.cpp via guidance
-    - transformers: Local HuggingFace transformers text generation
+    The returned function has signature:
+        generate(system_prompt: str, prompt: str, **kwargs) -> str
 
-    The returned function accepts: system_prompt, prompt, and optional kwargs like
-    temperature, max_tokens, timeout, image_path (ignored unless supported).
+    Args:
+        provider: Provider name ('openai', 'deepseek', 'qwen', 'ollama', 'lm_studio', 'llama_cpp', 'transformers')
+        config: Provider-specific configuration dict
+
+    Returns:
+        Callable generate(system_prompt, prompt, **kwargs) -> str
+
+    Raises:
+        ValueError: If provider is unknown or config is invalid
+        RuntimeError: If required dependencies are not installed
+
+    Example:
+        >>> gen = get_generate_fn('openai', {'api_key': 'sk-...', 'model': 'gpt-4'})
+        >>> response = gen(system_prompt='You are helpful.', prompt='Hello!')
     """
     config = config or {}
     provider = provider.lower()
 
-    # OpenAI official API
+    # ============================================================
+    # OpenAI Official API
+    # ============================================================
     if provider == "openai":
-        # Uses generate_OpenAIGPT from openai_tools
-        from GraphReasoning.openai_tools import generate_OpenAIGPT
+        from Llms.openai_tools import generate_OpenAIGPT
 
         def generate(system_prompt: str, prompt: str, **kwargs) -> str:
             return generate_OpenAIGPT(
@@ -42,16 +63,19 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
 
         return generate
 
-    # Custom OpenAI-compatible servers
+    # ============================================================
+    # OpenAI-compatible APIs (DeepSeek, Qwen)
+    # ============================================================
     if provider in ("deepseek", "qwen"):
-        # OpenAI-compatible servers: require base_url and api_key
         import requests
 
         base_url = config.get("base_url")
         api_key = config.get("api_key")
         model = config.get("model")
         if not base_url or not api_key or not model:
-            raise ValueError("For provider deepseek/qwen, base_url, api_key, and model are required")
+            raise ValueError(
+                f"For provider {provider}, base_url, api_key, and model are required"
+            )
 
         def generate(system_prompt: str, prompt: str, **kwargs) -> str:
             headers = {
@@ -69,32 +93,34 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
                 "top_p": kwargs.get("top_p", 1.0),
             }
             url = base_url.rstrip("/") + "/chat/completions"
-            resp = requests.post(url, json=payload, headers=headers, timeout=kwargs.get("timeout", 120))
+            resp = requests.post(
+                url,
+                json=payload,
+                headers=headers,
+                timeout=kwargs.get("timeout", 120),
+            )
             resp.raise_for_status()
             data = resp.json()
             return data["choices"][0]["message"]["content"]
 
         return generate
 
-    # Local OpenAI-compatible servers: ollama, lm_studio
+    # ============================================================
+    # Local OpenAI-compatible servers (Ollama, LM Studio)
+    # ============================================================
     if provider in ("ollama", "lm_studio"):
-        # Both expose OpenAI-compatible /v1/chat/completions endpoints locally.
-        # Example configs:
-        #   Ollama:   base_url='http://localhost:11434/v1', api_key='ollama'
-        #   LMStudio: base_url='http://localhost:1234/v1',  api_key='lm-studio'
         import requests
 
         base_url = config.get("base_url")
-        api_key = config.get("api_key", "")  # Some local servers accept any token
+        api_key = config.get("api_key", "")
         model = config.get("model")
         if not base_url or not model:
-            raise ValueError("For provider ollama/lm_studio, base_url and model are required")
+            raise ValueError(
+                f"For provider {provider}, base_url and model are required"
+            )
 
         def generate(system_prompt: str, prompt: str, **kwargs) -> str:
-            headers = {
-                "Content-Type": "application/json",
-            }
-            # Include Authorization only if provided
+            headers = {"Content-Type": "application/json"}
             if api_key:
                 headers["Authorization"] = f"Bearer {api_key}"
 
@@ -109,46 +135,59 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
                 "top_p": kwargs.get("top_p", 1.0),
             }
             url = base_url.rstrip("/") + "/chat/completions"
-            resp = requests.post(url, json=payload, headers=headers, timeout=kwargs.get("timeout", 120))
+            resp = requests.post(
+                url,
+                json=payload,
+                headers=headers,
+                timeout=kwargs.get("timeout", 120),
+            )
             resp.raise_for_status()
             data = resp.json()
             return data["choices"][0]["message"]["content"]
 
         return generate
 
+    # ============================================================
     # Local llama.cpp via guidance
+    # ============================================================
     if provider == "llama_cpp":
-        # Local llama.cpp via guidance
         try:
             from guidance.models import LlamaCpp
         except Exception as e:
-            raise RuntimeError("guidance LlamaCpp not available. Install guidance and llama.cpp.") from e
+            raise RuntimeError(
+                "guidance LlamaCpp not available. Install: pip install guidance"
+            ) from e
 
-        # Minimal wrapper around guidance model
         model_path = config.get("model_path")
         if not model_path:
             raise ValueError("llama_cpp requires model_path to gguf file")
 
-        # Instantiate once and close over it
         llm = LlamaCpp(model=model_path)
 
         def generate(system_prompt: str, prompt: str, **kwargs) -> str:
-            # Simple concatenation; advanced chat formatting can be added as needed
             full_prompt = f"{system_prompt}\n\n{prompt}"
             out = llm(full_prompt, temperature=kwargs.get("temperature", 0.2))
             return str(out)
 
         return generate
 
-    # Local HF transformers text-generation
+    # ============================================================
+    # Local HuggingFace Transformers
+    # ============================================================
     if provider == "transformers":
-        # Local HF transformers text-generation
-        from transformers import AutoModelForCausalLM, AutoTokenizer
-        import torch
+        try:
+            from transformers import AutoModelForCausalLM, AutoTokenizer
+            import torch
+        except Exception as e:
+            raise RuntimeError(
+                "transformers not available. Install: pip install transformers torch"
+            ) from e
 
         model_name = config.get("model")
         if not model_name:
-            raise ValueError("transformers requires 'model' (e.g., 'Qwen/Qwen2.5-7B-Instruct')")
+            raise ValueError(
+                "transformers requires 'model' (e.g., 'Qwen/Qwen2.5-7B-Instruct')"
+            )
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
         model = AutoModelForCausalLM.from_pretrained(model_name)
@@ -167,4 +206,10 @@ def get_generate_fn(provider: str, config: Optional[Dict[str, Any]] = None) -> C
 
         return generate
 
-    raise ValueError(f"Unknown provider: {provider}")
+    # ============================================================
+    # Unknown provider
+    # ============================================================
+    raise ValueError(
+        f"Unknown provider: {provider}. Supported: openai, deepseek, qwen, ollama, "
+        "lm_studio, llama_cpp, transformers"
+    )

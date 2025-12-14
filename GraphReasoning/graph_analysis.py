@@ -1,6 +1,6 @@
-from GraphReasoning.graph_tools import *
+from GraphTools import *
 from GraphReasoning.utils import *
-from GraphReasoning.graph_generation import *
+from GraphConstruct.graph_generation import *
 import networkx as nx
 import matplotlib.pyplot as plt
 import os

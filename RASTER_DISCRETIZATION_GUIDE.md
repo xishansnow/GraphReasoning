@@ -37,7 +37,7 @@ RasterPixel (基类)
 
 #### RasterPixel (基类)
 ```python
-from DGGS import RasterPixel
+from Dggs import RasterPixel
 
 pixel = RasterPixel(
     lat=40.0,
@@ -58,7 +58,7 @@ pixel = RasterPixel(
 
 #### CategoricalPixel (分类栅格)
 ```python
-from DGGS import CategoricalPixel
+from Dggs import CategoricalPixel
 
 pixel = CategoricalPixel(
     lat=40.0,
@@ -80,7 +80,7 @@ pixel = CategoricalPixel(
 
 #### ContinuousPixel (连续栅格)
 ```python
-from DGGS import ContinuousPixel
+from Dggs import ContinuousPixel
 
 pixel = ContinuousPixel(
     lat=40.0,
@@ -106,7 +106,7 @@ pixel = ContinuousPixel(
 **目的**: 将分类栅格聚合到 DGGS 单元格
 
 ```python
-from DGGS import discretize_raster_categorical, CategoricalPixel
+from Dggs import discretize_raster_categorical, CategoricalPixel
 
 # 创建像素数据
 pixels = [
@@ -155,7 +155,7 @@ result = discretize_raster_categorical(
 **目的**: 将连续栅格聚合到 DGGS 单元格
 
 ```python
-from DGGS import discretize_raster_continuous, ContinuousPixel
+from Dggs import discretize_raster_continuous, ContinuousPixel
 
 # 创建像素数据
 pixels = [
@@ -216,7 +216,7 @@ result = discretize_raster_continuous(
 **目的**: 处理时间序列栅格数据
 
 ```python
-from DGGS import discretize_raster_temporal, CategoricalPixel
+from Dggs import discretize_raster_temporal, CategoricalPixel
 
 # 准备多年数据
 pixels_by_time = {
@@ -256,7 +256,7 @@ result = discretize_raster_temporal(
 **目的**: 检测两个时间段之间的变化
 
 ```python
-from DGGS import calculate_raster_change
+from Dggs import calculate_raster_change
 
 # 计算变化 (分类数据)
 changes = calculate_raster_change(
@@ -297,7 +297,7 @@ changes = calculate_raster_change(
 
 ### 场景 1: NLCD 土地覆盖
 ```python
-from DGGS import CategoricalPixel, discretize_raster_categorical
+from Dggs import CategoricalPixel, discretize_raster_categorical
 
 # NLCD 代码映射
 nlcd_mapping = {
@@ -328,7 +328,7 @@ result = discretize_raster_categorical(
 
 ### 场景 2: PRISM 气候数据
 ```python
-from DGGS import ContinuousPixel, discretize_raster_continuous
+from Dggs import ContinuousPixel, discretize_raster_continuous
 
 # 温度数据
 pixels = [
@@ -349,7 +349,7 @@ result = discretize_raster_continuous(
 
 ### 场景 3: SRTM 高程数据
 ```python
-from DGGS import ContinuousPixel, discretize_raster_continuous
+from Dggs import ContinuousPixel, discretize_raster_continuous
 
 # 高程数据
 pixels = [
@@ -375,7 +375,7 @@ for cell_token, data in result.items():
 
 ### 场景 4: 土地覆盖变化检测
 ```python
-from DGGS import discretize_raster_temporal, calculate_raster_change
+from Dggs import discretize_raster_temporal, calculate_raster_change
 
 # 多年数据
 pixels_by_year = {
@@ -411,14 +411,14 @@ CDL 模块已重构为**继承通用栅格模块**:
 
 ```python
 # CDLPixel 现在继承自 CategoricalPixel
-from DGGS import CDLPixel
+from Dggs import CDLPixel
 
 # 方式 1: 使用 CDL 专用函数 (向后兼容)
-from DGGS import discretize_cdl_crop_distribution
+from Dggs import discretize_cdl_crop_distribution
 result_cdl = discretize_cdl_crop_distribution(cdl_pixels, level=12)
 
 # 方式 2: 使用通用栅格函数 (新方式)
-from DGGS import discretize_raster_categorical
+from Dggs import discretize_raster_categorical
 result_generic = discretize_raster_categorical(cdl_pixels, level=12)
 ```
 
@@ -512,7 +512,7 @@ def process_large_raster(pixels, chunk_size=10000):
 要添加新的栅格类型 (如 MODIS):
 
 ```python
-from DGGS.discretizer_raster import CategoricalPixel, discretize_raster_categorical
+from Dggs.discretizer_raster import CategoricalPixel, discretize_raster_categorical
 
 class MODISPixel(CategoricalPixel):
     """MODIS Land Cover pixel"""

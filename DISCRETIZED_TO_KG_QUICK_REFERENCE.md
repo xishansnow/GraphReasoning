@@ -11,7 +11,7 @@ pip install networkx pandas h3
 ### 基本用法
 
 ```python
-from DGGS import (
+from Dggs import (
     discretize_cdl_crop_distribution,
     prepare_for_graph_reasoning
 )
@@ -31,7 +31,7 @@ print(f"✓ 已生成 {len(triplets)} 个三元组")
 print(f"✓ 图谱包含 {graph.number_of_nodes()} 个节点")
 
 # 3. 与 GraphReasoning 集成
-from GraphReasoning.graph_generation import make_graph_from_text
+from GraphConstruct.graph_generation import make_graph_from_text
 import pandas as pd
 
 df = pd.read_csv("./kg/cdl_triplets.csv", sep="|")
@@ -48,7 +48,7 @@ G = make_graph_from_text(df.values.tolist())
 ### 任务 1：CDL 作物数据到知识图谱
 
 ```python
-from DGGS import prepare_for_graph_reasoning
+from Dggs import prepare_for_graph_reasoning
 
 triplets, graph = prepare_for_graph_reasoning(
     discretized_data=cdl_discretized,
@@ -60,7 +60,7 @@ triplets, graph = prepare_for_graph_reasoning(
 
 ```python
 from examples.polygon_examples import discretized_ssurgo_to_triplets
-from DGGS import create_knowledge_graph_from_discretized_data
+from Dggs import create_knowledge_graph_from_discretized_data
 
 # 生成三元组
 triplets = []
@@ -77,7 +77,7 @@ graph, _ = create_knowledge_graph_from_discretized_data(
 ### 任务 3：合并 CDL 和 SSURGO 知识图谱
 
 ```python
-from DGGS import merge_into_existing_graph
+from Dggs import merge_into_existing_graph
 
 merged_graph = merge_into_existing_graph(
     existing_graph=cdl_graph,
@@ -89,7 +89,7 @@ merged_graph = merge_into_existing_graph(
 ### 任务 4：导出多种格式
 
 ```python
-from DGGS import (
+from Dggs import (
     export_triplets_to_csv,
     export_triplets_to_json,
     export_graph_to_graphml,
@@ -112,8 +112,8 @@ export_graph_to_rdf_turtle(triplets, "graph.ttl")
 ### 任务 5：计算空间相邻关系
 
 ```python
-from DGGS import spatial_adjacency_to_triplets
-from DGGS import Discretizer
+from Dggs import spatial_adjacency_to_triplets
+from Dggs import Discretizer
 
 grid = Discretizer()
 adjacency_triplets = spatial_adjacency_to_triplets(
@@ -125,7 +125,7 @@ adjacency_triplets = spatial_adjacency_to_triplets(
 ### 任务 6：分析时间变化（多年作物轮作）
 
 ```python
-from DGGS import temporal_triplets
+from Dggs import temporal_triplets
 
 temporal_data = {
     2020: {"dominant_crop": 1},
@@ -143,7 +143,7 @@ rotation_triplets = temporal_triplets("89c25a3", temporal_data)
 ### SpatialEntity（空间实体）
 
 ```python
-from DGGS import SpatialEntity
+from Dggs import SpatialEntity
 
 entity = SpatialEntity(
     entity_id="cdl_89c25a3",
@@ -156,7 +156,7 @@ triplets = entity.to_triplets()
 ### SpatialRelationship（空间关系）
 
 ```python
-from DGGS import SpatialRelationship
+from Dggs import SpatialRelationship
 
 relation = SpatialRelationship(
     subject_id="cdl_89c25a3",
@@ -314,7 +314,7 @@ export_triplets_to_csv(
 ### 完整工作流
 
 ```python
-from DGGS import (
+from Dggs import (
     discretize_cdl_crop_distribution,
     prepare_for_graph_reasoning
 )
@@ -331,7 +331,7 @@ triplets, graph = prepare_for_graph_reasoning(
 )
 
 # 3. 与 GraphReasoning 集成
-from GraphReasoning.graph_generation import make_graph_from_text
+from GraphConstruct.graph_generation import make_graph_from_text
 import pandas as pd
 
 df = pd.read_csv("./kg/cdl_triplets.csv", sep="|")
@@ -345,7 +345,7 @@ print(f"  边: {G.number_of_edges()}")
 ### 自定义三元组
 
 ```python
-from DGGS import SpatialEntity, SpatialRelationship
+from Dggs import SpatialEntity, SpatialRelationship
 
 # 创建自定义实体
 entity = SpatialEntity(
@@ -448,7 +448,7 @@ A: 可以。只需按 (subject, predicate, object) 格式添加到列表。
 
 查看函数文档：
 ```python
-from DGGS import discretized_to_kg
+from Dggs import discretized_to_kg
 help(discretized_to_kg.prepare_for_graph_reasoning)
 ```
 

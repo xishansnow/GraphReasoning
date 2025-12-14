@@ -12,7 +12,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from GraphReasoning.prompt_templates import (
+from Llms.prompt_templates import (
     render_prompt,
     add_custom_template,
     list_available_templates,
@@ -99,7 +99,7 @@ def example_5_batch_rendering():
 """
 The graphPrompt function now uses render_prompt() to fetch prompts dynamically:
 
-    from GraphReasoning.prompt_templates import render_prompt
+    from Llms.prompt_templates import render_prompt
     
     def graphPrompt(input: str, generate, metadata={}, repeat_refine=0, verbatim=False):
         # Step 1: Initial generation
@@ -132,7 +132,7 @@ Benefits:
 """
 1. **Modify Built-in Templates:**
    
-   from GraphReasoning.prompt_templates import PromptTemplate, get_registry
+   from Llms.prompt_templates import PromptTemplate, get_registry
    
    registry = get_registry()
    custom_template = PromptTemplate(
@@ -144,7 +144,7 @@ Benefits:
 
 2. **Add New Custom Templates:**
    
-   from GraphReasoning.prompt_templates import add_custom_template
+   from Llms.prompt_templates import add_custom_template
    
    add_custom_template(
        "my_custom_template",
@@ -157,7 +157,7 @@ Benefits:
    # Create a separate module for your domain:
    # my_domain_prompts.py
    
-   from GraphReasoning.prompt_templates import (
+   from Llms.prompt_templates import (
        PromptTemplate,
        add_custom_template
     )
@@ -169,7 +169,7 @@ Benefits:
 4. **Load Templates from Configuration:**
    
    import json
-   from GraphReasoning.prompt_templates import add_custom_template
+   from Llms.prompt_templates import add_custom_template
    
    with open("prompts_config.json") as f:
        config = json.load(f)

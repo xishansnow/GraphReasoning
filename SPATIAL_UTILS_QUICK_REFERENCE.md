@@ -8,7 +8,7 @@
 
 ### Basic Imports
 ```python
-from DGGS import (
+from Dggs import (
     aggregate_values,
     discretize_aggregate,
     discretize_polygon_strict,
@@ -229,7 +229,7 @@ Bounding box of a set of points.
 
 ### Pattern 1: Aggregate Sensor Data
 ```python
-from DGGS import discretize_aggregate
+from Dggs import discretize_aggregate
 
 sensor_data = [
     {'id': 'sensor_1', 'lat': 40.7, 'lon': -74.0, 'temperature': 22.5, 'humidity': 65},
@@ -249,7 +249,7 @@ result = discretize_aggregate(
 
 ### Pattern 2: Quality-Weighted Aggregation
 ```python
-from DGGS import discretize_weighted_aggregate
+from Dggs import discretize_weighted_aggregate
 
 measurements = [
     {'id': 'meas_1', 'lat': 40.7, 'lon': -74.0, 'value': 10, 'quality': 0.95},
@@ -265,7 +265,7 @@ result = discretize_weighted_aggregate(
 
 ### Pattern 3: Polygon Coverage Analysis
 ```python
-from DGGS import discretize_polygon_strict
+from Dggs import discretize_polygon_strict
 
 polygon = [[
     [-74.0, 40.7],
@@ -284,7 +284,7 @@ print(f"Polygon covers {len(cell_tokens)} cells at level 13")
 
 ### Pattern 4: Distance-Based Analysis
 ```python
-from DGGS import calculate_distance_km, calculate_bearing
+from Dggs import calculate_distance_km, calculate_bearing
 
 # Find distance between two locations
 distance = calculate_distance_km(40.7, -74.0, 51.5, -0.1)  # NYC to London
@@ -299,8 +299,8 @@ print(f"Bearing: {bearing:.0f}°")  # 0° = North, 90° = East, etc.
 
 ### With point.py
 ```python
-from DGGS.discretizer_point import PointFeature, discretize_point_features
-from DGGS import aggregate_values
+from Dggs.discretizer_point import PointFeature, discretize_point_features
+from Dggs import aggregate_values
 
 # Point discretization uses discretize_aggregate internally
 features = [PointFeature(lat=40.7, lon=-74.0, name='POI1', attributes={'type': 'restaurant'})]
@@ -309,8 +309,8 @@ result = discretize_point_features(features, method='centroid')
 
 ### With polygon.py
 ```python
-from DGGS.discretizer_polygon import PolygonFeature, discretize_polygon_features
-from DGGS import discretize_polygon_strict
+from Dggs.discretizer_polygon import PolygonFeature, discretize_polygon_features
+from Dggs import discretize_polygon_strict
 
 # Polygon discretization uses discretize_polygon_strict internally
 features = [PolygonFeature(polygon_coords=[[...]], attributes={...})]
@@ -319,8 +319,8 @@ result = discretize_polygon_features(features, method='coverage')
 
 ### With ssurgo.py
 ```python
-from DGGS.ssurgo import SSURGOMapUnit
-from DGGS import discretize_weighted_aggregate
+from Dggs.ssurgo import SSURGOMapUnit
+from Dggs import discretize_weighted_aggregate
 
 # SSURGO discretization uses discretize_weighted_aggregate for components
 mapunit = SSURGOMapUnit(mukey='123456', ...)
@@ -338,14 +338,14 @@ result = discretize_ssurgo_features([mapunit], method='weighted')
 
 All functions are also available via legacy imports:
 ```python
-from DGGS.discretize import discretize_aggregate  # Still works
-from DGGS.geometry import discretize_polygon_strict  # Still works
+from Dggs.discretize import discretize_aggregate  # Still works
+from Dggs.geometry import discretize_polygon_strict  # Still works
 ```
 
 But new code should use:
 ```python
-from DGGS import discretize_aggregate  # Recommended
-from DGGS.spatial_utils import discretize_polygon_strict  # Recommended
+from Dggs import discretize_aggregate  # Recommended
+from Dggs.spatial_utils import discretize_polygon_strict  # Recommended
 ```
 
 ## See Also

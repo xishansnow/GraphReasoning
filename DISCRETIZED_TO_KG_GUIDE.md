@@ -20,7 +20,7 @@
 表示 DGGS 单元格中的一个地理空间对象。
 
 ```python
-from DGGS import SpatialEntity
+from Dggs import SpatialEntity
 
 entity = SpatialEntity(
     entity_id="cdl_89c25a3",           # 唯一标识符
@@ -47,7 +47,7 @@ triplets = entity.to_triplets()
 表示两个实体之间的关系。
 
 ```python
-from DGGS import SpatialRelationship
+from Dggs import SpatialRelationship
 
 relation = SpatialRelationship(
     subject_id="cdl_89c25a3",
@@ -135,7 +135,7 @@ triplets = discretized_ssurgo_to_triplets(cell_token, ssurgo_data)
 ### 3. 农业强度 → 三元组
 
 ```python
-from DGGS import discretized_agricultural_intensity_to_triplets
+from Dggs import discretized_agricultural_intensity_to_triplets
 
 cell_token = "89c25a3"
 intensity_data = {
@@ -159,7 +159,7 @@ triplets = discretized_agricultural_intensity_to_triplets(cell_token, intensity_
 ### 4. 空间相邻关系 → 三元组
 
 ```python
-from DGGS import spatial_adjacency_to_triplets
+from Dggs import spatial_adjacency_to_triplets
 
 # 获取 DGGS 单元格的相邻单元格
 cell_tokens = ["89c25a3", "89c25a1", "89c259f"]
@@ -179,7 +179,7 @@ triplets = spatial_adjacency_to_triplets(cell_tokens, grid)
 ### 5. 时间关系 → 三元组
 
 ```python
-from DGGS import temporal_triplets
+from Dggs import temporal_triplets
 
 cell_token = "89c25a3"
 temporal_data = {
@@ -209,7 +209,7 @@ triplets = temporal_triplets(cell_token, temporal_data)
 ### 从三元组创建 NetworkX 图
 
 ```python
-from DGGS import create_knowledge_graph_from_discretized_data
+from Dggs import create_knowledge_graph_from_discretized_data
 import pandas as pd
 
 # 示例 1：从 CDL 数据创建图
@@ -240,7 +240,7 @@ soil_graph, soil_triplets = create_knowledge_graph_from_discretized_data(
 ### 合并多个图
 
 ```python
-from DGGS import merge_into_existing_graph
+from Dggs import merge_into_existing_graph
 
 # 将 SSURGO 图合并到 CDL 图中
 merged_graph = merge_into_existing_graph(
@@ -260,7 +260,7 @@ print(f"合并后 - 边数: {merged_graph.number_of_edges()}")
 ### 导出为 CSV（GraphReasoning 兼容）
 
 ```python
-from DGGS import export_triplets_to_csv
+from Dggs import export_triplets_to_csv
 import pandas as pd
 
 # 导出为 CSV
@@ -279,7 +279,7 @@ print(df.head())
 ### 导出为 GraphML（可视化）
 
 ```python
-from DGGS import export_graph_to_graphml
+from Dggs import export_graph_to_graphml
 
 # 导出为 GraphML
 output_file = "kg.graphml"
@@ -291,7 +291,7 @@ export_graph_to_graphml(graph, output_file)
 ### 导出为 RDF Turtle（语义网）
 
 ```python
-from DGGS import export_graph_to_rdf_turtle
+from Dggs import export_graph_to_rdf_turtle
 
 # 导出为 RDF Turtle 格式
 output_file = "kg.ttl"
@@ -305,7 +305,7 @@ with open(output_file, "r") as f:
 ### 导出为 JSON
 
 ```python
-from DGGS import export_triplets_to_json
+from Dggs import export_triplets_to_json
 
 # 导出为 JSON
 output_file = "kg.json"
@@ -319,7 +319,7 @@ export_triplets_to_json(triplets, output_file, graph=graph)
 ### 快速集成
 
 ```python
-from DGGS import prepare_for_graph_reasoning
+from Dggs import prepare_for_graph_reasoning
 
 # 一次调用完成所有步骤
 triplets, graph = prepare_for_graph_reasoning(
@@ -337,16 +337,16 @@ triplets, graph = prepare_for_graph_reasoning(
 ### 与 GraphReasoning 推理引擎集成
 
 ```python
-from GraphReasoning.graph_generation import make_graph_from_text
+from GraphConstruct.graph_generation import make_graph_from_text
 from GraphReasoning.graph_analysis import find_path_and_reason
-from GraphReasoning.llm_providers import get_generate_fn
+from Llms.llm_providers import get_generate_fn
 import pandas as pd
 
 # 1. 加载三元组
 df = pd.read_csv("kg_output/cdl_triplets.csv", sep="|")
 
 # 2. 创建 NetworkX 图
-from GraphReasoning.graph_generation import make_graph_from_text
+from GraphConstruct.graph_generation import make_graph_from_text
 G = make_graph_from_text(df.values.tolist())
 
 # 3. 初始化 LLM
@@ -381,7 +381,7 @@ from examples.polygon_examples import (
     discretized_ssurgo_to_triplets,
 )
 # 通用知识图谱工具在 DGGS 包中
-from DGGS import (
+from Dggs import (
     create_knowledge_graph_from_discretized_data,
     merge_into_existing_graph,
     prepare_for_graph_reasoning
@@ -566,7 +566,7 @@ print("✓ CSV 格式验证通过")
 
 快速开始：
 ```python
-from DGGS import discretized_to_kg
+from Dggs import discretized_to_kg
 help(discretized_to_kg.discretized_cdl_to_triplets)
 help(discretized_to_kg.create_knowledge_graph_from_discretized_data)
 help(discretized_to_kg.prepare_for_graph_reasoning)

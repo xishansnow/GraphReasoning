@@ -10,7 +10,7 @@ This package provides:
 - Topology enrichment (topo_enrichment.py): Graph construction with spatial relationships
 """
 
-from .dggs import DGGSS2
+from .dggs import DggsS2
 
 # Core spatial utilities (new consolidated module)
 from .spatial_utils import (
@@ -184,11 +184,11 @@ __all__ = [
 # and the main DGGS exports above.
 #
 # Migration Guide:
-#  OLD: from DGGS.discretize import discretize_aggregate
-#  NEW: from DGGS import discretize_aggregate
+#  OLD: from Dggs.discretize import discretize_aggregate
+#  NEW: from Dggs import discretize_aggregate
 #
-#  OLD: from DGGS.geometry import discretize_polygon_strict
-#  NEW: from DGGS import discretize_polygon_strict
+#  OLD: from Dggs.geometry import discretize_polygon_strict
+#  NEW: from Dggs import discretize_polygon_strict
 #
-#  OLD: from DGGS.geometry import discretize_points
+#  OLD: from Dggs.geometry import discretize_points
 #  NEW: This function is now in spatial_utils.py (use sparingly, mostly superseded)

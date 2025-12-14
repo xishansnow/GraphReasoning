@@ -12,7 +12,7 @@ geometry.py and discretize.py, reducing code duplication.
 
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Callable, Union
 from s2sphere import CellId, LatLngRect, Cell, LatLng
-from .dggs import DGGSS2
+from .dggs import DggsS2
 import statistics
 import math
 

@@ -1,7 +1,6 @@
-"""
-Prompt Template Manager for Graph Generation.
+"""Prompt Template Manager for LLM-based tasks.
 
-This module manages system prompts and user prompts for LLM-based graph generation,
+This module manages system prompts and user prompts for LLM interactions,
 allowing centralized maintenance and easy customization of prompts.
 """
 
@@ -32,7 +31,6 @@ class PromptTemplate:
         Returns:
             Tuple (system_prompt, user_prompt) with variables substituted.
         """
-        # Use safe_format to handle braces that are not placeholders
         sys_rendered = self._safe_format(self.system_prompt, **kwargs)
         usr_rendered = self._safe_format(self.user_prompt, **kwargs)
         return sys_rendered, usr_rendered
@@ -44,12 +42,10 @@ class PromptTemplate:
         Ignores format placeholders that are not in kwargs.
         """
         try:
-            # Only try to format if there are kwargs and text contains {
             if kwargs and "{" in text:
                 return text.format(**kwargs)
             return text
         except (KeyError, ValueError):
-            # If formatting fails, return original text
             return text
 
 
@@ -97,46 +93,13 @@ class PromptTemplateRegistry:
 PROMPT_GRAPH_MAKER_INITIAL = PromptTemplate(
     name="graph_maker_initial",
     system_prompt=(
-        "You are a network ontology graph maker who extracts terms and their relations from a given context, using category theory. "
-        "You are provided with a context chunk (delimited by ```). Your task is to extract the ontology "
-        "of terms mentioned in the given context. These terms should represent the key concepts as per the context, including well-defined and widely used names of materials, systems, methods. \n\n"
-        "Format your output as a list of JSON. Each element of the list contains a pair of terms "
-        "and the relation between them, like the following: \n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "A concept from extracted ontology",\n'
-        '       "node_2": "A related concept from extracted ontology",\n'
-        '       "edge": "Relationship between the two concepts, node_1 and node_2, succinctly described"\n'
-        "   }, {...}\n"
-        "]\n\n"
+        "You are a network ontology graph maker who extracts terms and their relations from context, using category theory. "
+        "Your task is to extract the ontology of key concepts in the given context, including materials, systems, and methods.\n\n"
+        "Format output as JSON triplets: [{'node_1': 'concept', 'node_2': 'related', 'edge': 'relationship'}, ...]\n\n"
         "Examples:\n"
-        "Context: ```Alice is Marc's mother.```\n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "Alice",\n'
-        '       "node_2": "Marc",\n'
-        '       "edge": "is mother of"\n'
-        "   }\n"
-        "]\n\n"
-        "Context: ```Silk is a strong natural fiber used to catch prey in a web. Beta-sheets control its strength.```\n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "silk",\n'
-        '       "node_2": "fiber",\n'
-        '       "edge": "is"\n'
-        "   },\n"
-        "   {\n"
-        '       "node_1": "beta-sheets",\n'
-        '       "node_2": "strength",\n'
-        '       "edge": "control"\n'
-        "   },\n"
-        "   {\n"
-        '       "node_1": "silk",\n'
-        '       "node_2": "prey",\n'
-        '       "edge": "catches"\n'
-        "   }\n"
-        "]\n\n"
-        "Analyze the text carefully and produce around 10 triplets, making sure they reflect consistent ontologies.\n"
+        "Context: 'Alice is Marc's mother.'\n"
+        "[{'node_1': 'Alice', 'node_2': 'Marc', 'edge': 'is mother of'}]\n\n"
+        "Produce around 10 triplets reflecting consistent ontologies."
     ),
     user_prompt="Context: ```{input}```\n\nOutput: ",
 )
@@ -144,65 +107,87 @@ PROMPT_GRAPH_MAKER_INITIAL = PromptTemplate(
 PROMPT_GRAPH_FORMAT = PromptTemplate(
     name="graph_format",
     system_prompt=(
-        "You respond in this format:\n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "A concept from extracted ontology",\n'
-        '       "node_2": "A related concept from extracted ontology",\n'
-        '       "edge": "Relationship between the two concepts, node_1 and node_2, succinctly described"\n'
-        '   }, {...} ]\n'
+        "You respond in JSON format:\n"
+        "[{'node_1': 'concept', 'node_2': 'related', 'edge': 'relationship'}, ...]"
     ),
     user_prompt=(
-        "Read this context: ```{input}```.\n"
+        "Read this context: ```{input}```\n"
         "Read this ontology: ```{ontology}```\n\n"
-        "Improve the ontology by renaming nodes so that they have consistent labels that are widely used in the field of materials science."
+        "Improve the ontology by renaming nodes with consistent field-standard labels."
     ),
 )
 
 PROMPT_GRAPH_FIX_FORMAT = PromptTemplate(
     name="graph_fix_format",
     system_prompt=(
-        "You respond in this format:\n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "A concept from extracted ontology",\n'
-        '       "node_2": "A related concept from extracted ontology",\n'
-        '       "edge": "Relationship between the two concepts, node_1 and node_2, succinctly described"\n'
-        '   }, {...} ]\n'
+        "You respond in JSON triplet format:\n"
+        "[{'node_1': 'concept', 'node_2': 'related', 'edge': 'relationship'}, ...]"
     ),
-    user_prompt="Context: ```{ontology}```\n\nFix to make sure it is proper format.",
+    user_prompt="Fix this ontology to proper JSON format: ```{ontology}```",
 )
 
 PROMPT_GRAPH_ADD_TRIPLETS = PromptTemplate(
     name="graph_add_triplets",
     system_prompt=(
-        "You are a network ontology graph maker who extracts terms and their relations from a given context, using category theory. "
-        "You are provided with a context chunk (delimited by ```). Your task is to extract the ontology "
-        "of terms mentioned in the given context. These terms should represent the key concepts as per the context, including well-defined and widely used names of materials, systems, methods.\n\n"
-        "Format your output as a list of JSON triplets."
+        "You are a network ontology graph maker extracting terms and relations from context.\n"
+        "Format output as JSON triplets in the specified format."
     ),
     user_prompt=(
-        "Insert new triplets into the original ontology. Read this context: ```{input}```.\n"
-        "Read this ontology: ```{ontology}```\n\n"
-        "Insert additional triplets to the original list, in the same JSON format. Repeat original AND new triplets.\n"
+        "Read context: ```{input}```\n"
+        "Read ontology: ```{ontology}```\n\n"
+        "Add new triplets to the original list, keeping same JSON format. Return original + new triplets."
     ),
 )
 
 PROMPT_GRAPH_REFINE = PromptTemplate(
     name="graph_refine",
     system_prompt=(
-        "You respond in this format:\n"
-        "[\n"
-        "   {\n"
-        '       "node_1": "A concept from extracted ontology",\n'
-        '       "node_2": "A related concept from extracted ontology",\n'
-        '       "edge": "Relationship between the two concepts, node_1 and node_2, succinctly described"\n'
-        '   }, {...} ]\n'
+        "You respond in JSON triplet format:\n"
+        "[{'node_1': 'concept', 'node_2': 'related', 'edge': 'relationship'}, ...]"
     ),
     user_prompt=(
-        "Read this context: ```{input}```.\n"
-        "Read this ontology: ```{ontology}```\n\n"
-        "Revise the ontology by renaming nodes and edges so that they have consistent and concise labels."
+        "Read context: ```{input}```\n"
+        "Read ontology: ```{ontology}```\n\n"
+        "Revise the ontology with consistent and concise node/edge labels."
+    ),
+)
+
+# Historical Knowledge Graph Prompts
+PROMPT_HISTORICAL_ENTITY_EXTRACTION = PromptTemplate(
+    name="historical_entity_extraction",
+    system_prompt=(
+        "You are a historical knowledge extraction specialist. Extract named entities from historical text "
+        "including persons, places, events, organizations, and artifacts. "
+        "For each entity, provide type and description."
+    ),
+    user_prompt=(
+        "Extract historical entities from this text:\n```{text}```\n\n"
+        "Format: [{'entity': 'name', 'type': 'person|place|event|organization|artifact', 'description': '...'}]"
+    ),
+)
+
+PROMPT_HISTORICAL_RELATION_EXTRACTION = PromptTemplate(
+    name="historical_relation_extraction",
+    system_prompt=(
+        "You are a historical relation extraction specialist. Extract relationships between entities "
+        "from historical text. Include causality, temporal, and spatial relations."
+    ),
+    user_prompt=(
+        "Extract relations from this historical text:\n```{text}```\n\n"
+        "Known entities: {entities}\n\n"
+        "Format: [{'source': 'entity1', 'target': 'entity2', 'relation': 'type', 'description': '...'}]"
+    ),
+)
+
+PROMPT_HISTORICAL_EVENT_TIMELINE = PromptTemplate(
+    name="historical_event_timeline",
+    system_prompt=(
+        "You are a historical timeline expert. Order historical events chronologically "
+        "and identify cause-effect relationships between them."
+    ),
+    user_prompt=(
+        "Create a timeline from these historical facts:\n```{text}```\n\n"
+        "Format: [{'date': 'YYYY-MM-DD or period', 'event': 'description', 'significance': '...'}]"
     ),
 )
 
@@ -216,6 +201,9 @@ _default_registry.register(PROMPT_GRAPH_FORMAT)
 _default_registry.register(PROMPT_GRAPH_FIX_FORMAT)
 _default_registry.register(PROMPT_GRAPH_ADD_TRIPLETS)
 _default_registry.register(PROMPT_GRAPH_REFINE)
+_default_registry.register(PROMPT_HISTORICAL_ENTITY_EXTRACTION)
+_default_registry.register(PROMPT_HISTORICAL_RELATION_EXTRACTION)
+_default_registry.register(PROMPT_HISTORICAL_EVENT_TIMELINE)
 
 
 def get_registry() -> PromptTemplateRegistry:

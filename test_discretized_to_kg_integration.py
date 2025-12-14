@@ -24,7 +24,7 @@ def test_imports():
     print("=" * 70)
     
     try:
-        from DGGS import (
+        from Dggs import (
             # 数据模型
             SpatialEntity,
             SpatialRelationship,
@@ -67,7 +67,7 @@ def test_spatial_entity():
     print("=" * 70)
     
     try:
-        from DGGS import SpatialEntity
+        from Dggs import SpatialEntity
         
         entity = SpatialEntity(
             entity_id="test_entity_1",
@@ -101,7 +101,7 @@ def test_spatial_relationship():
     print("=" * 70)
     
     try:
-        from DGGS import SpatialRelationship
+        from Dggs import SpatialRelationship
         
         relation = SpatialRelationship(
             source_id="entity_1",
@@ -146,7 +146,7 @@ def test_triplet_generation():
             create_cdl_sample_data,
             discretized_cdl_to_triplets,
         )
-        from DGGS import (
+        from Dggs import (
             discretized_agricultural_intensity_to_triplets
         )
         
@@ -215,7 +215,7 @@ def test_graph_creation():
     print("=" * 70)
     
     try:
-        from DGGS import (
+        from Dggs import (
             create_knowledge_graph_from_discretized_data
         )
         from examples.polygon_examples import (
@@ -258,7 +258,7 @@ def test_graph_creation():
         print(f"    ✓ SSURGO 图谱 - 节点: {ssurgo_graph.number_of_nodes()}, 边: {ssurgo_graph.number_of_edges()}")
         
         print("  步骤 4/4: 合并多源知识图谱...")
-        from DGGS import merge_into_existing_graph
+        from Dggs import merge_into_existing_graph
         merged_graph = merge_into_existing_graph(
             cdl_graph,
             ssurgo_triplets,
@@ -288,7 +288,7 @@ def test_export_formats():
     print("=" * 70)
     
     try:
-        from DGGS import (
+        from Dggs import (
             create_knowledge_graph_from_discretized_data,
             export_triplets_to_csv,
             export_triplets_to_json,
@@ -364,7 +364,7 @@ def test_integration():
     print("=" * 70)
     
     try:
-        from DGGS import (
+        from Dggs import (
             prepare_for_graph_reasoning
         )
         from examples.polygon_examples import (
@@ -432,7 +432,7 @@ def test_integration():
         
         # === 集成验证 ===
         print("\n  🔗 多源数据集成:")
-        from DGGS import merge_into_existing_graph
+        from Dggs import merge_into_existing_graph
         integrated_graph = merge_into_existing_graph(
             cdl_graph,
             ssurgo_triplets,

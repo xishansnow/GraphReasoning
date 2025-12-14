@@ -3,8 +3,8 @@
 ## 🚀 快速开始
 
 ```python
-from DGGS.ssurgo import create_ssurgo_sample_data
-from DGGS import discretize_ssurgo_agricultural_suitability
+from Dggs.ssurgo import create_ssurgo_sample_data
+from Dggs import discretize_ssurgo_agricultural_suitability
 
 # 1. 获取数据
 map_units = create_ssurgo_sample_data()
@@ -25,7 +25,7 @@ for cell, data in result.items():
 
 ### 1. 基础离散化
 ```python
-from DGGS import discretize_ssurgo_map_units
+from Dggs import discretize_ssurgo_map_units
 
 result = discretize_ssurgo_map_units(map_units, level=12, method='centroid')
 # method: 'centroid' (快) | 'coverage' (精)
@@ -33,7 +33,7 @@ result = discretize_ssurgo_map_units(map_units, level=12, method='centroid')
 
 ### 2. 土壤属性
 ```python
-from DGGS import discretize_ssurgo_soil_properties
+from Dggs import discretize_ssurgo_soil_properties
 
 result = discretize_ssurgo_soil_properties(
     map_units,
@@ -45,7 +45,7 @@ result = discretize_ssurgo_soil_properties(
 
 ### 3. 农业适宜性
 ```python
-from DGGS import discretize_ssurgo_agricultural_suitability
+from Dggs import discretize_ssurgo_agricultural_suitability
 
 result = discretize_ssurgo_agricultural_suitability(
     map_units, crop='corn', level=12
@@ -55,7 +55,7 @@ result = discretize_ssurgo_agricultural_suitability(
 
 ### 4. 水文分类
 ```python
-from DGGS import discretize_ssurgo_hydrologic_group
+from Dggs import discretize_ssurgo_hydrologic_group
 
 result = discretize_ssurgo_hydrologic_group(map_units, level=12)
 # HSG: A (高入渗) -> D (低入渗)
@@ -66,7 +66,7 @@ result = discretize_ssurgo_hydrologic_group(map_units, level=12)
 ## 🔧 数据模型
 
 ```python
-from DGGS.ssurgo import SSURGOMapUnit
+from Dggs.ssurgo import SSURGOMapUnit
 
 mu = SSURGOMapUnit(
     mukey='123456',

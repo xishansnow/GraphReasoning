@@ -38,7 +38,7 @@ SSURGO Database
 ### 数据模型
 
 ```python
-from DGGS.ssurgo import SSURGOMapUnit
+from Dggs.ssurgo import SSURGOMapUnit
 
 # 创建地图单元
 map_unit = SSURGOMapUnit(
@@ -69,7 +69,7 @@ map_unit = SSURGOMapUnit(
 **方法**: 将 SSURGO 地图单元映射到 DGGS 单元
 
 ```python
-from DGGS import discretize_ssurgo_map_units
+from Dggs import discretize_ssurgo_map_units
 
 result = discretize_ssurgo_map_units(
     map_units,
@@ -98,7 +98,7 @@ result = discretize_ssurgo_map_units(
 **方法**: 将多个土壤成分的属性加权聚合
 
 ```python
-from DGGS import discretize_ssurgo_soil_properties
+from Dggs import discretize_ssurgo_soil_properties
 
 result = discretize_ssurgo_soil_properties(
     map_units,
@@ -132,7 +132,7 @@ result = discretize_ssurgo_soil_properties(
 **方法**: 基于土壤属性计算作物适宜性评分
 
 ```python
-from DGGS import discretize_ssurgo_agricultural_suitability
+from Dggs import discretize_ssurgo_agricultural_suitability
 
 result = discretize_ssurgo_agricultural_suitability(
     map_units,
@@ -164,7 +164,7 @@ result = discretize_ssurgo_agricultural_suitability(
 **方法**: 离散化 USDA 水文土壤分类 (HSG) 用于径流分析
 
 ```python
-from DGGS import discretize_ssurgo_hydrologic_group
+from Dggs import discretize_ssurgo_hydrologic_group
 
 result = discretize_ssurgo_hydrologic_group(map_units, level=12)
 
@@ -193,7 +193,7 @@ result = discretize_ssurgo_hydrologic_group(map_units, level=12)
 **方法**: 分析不同深度的土壤属性
 
 ```python
-from DGGS.ssurgo import discretize_ssurgo_horizon_properties
+from Dggs.ssurgo import discretize_ssurgo_horizon_properties
 
 result = discretize_ssurgo_horizon_properties(
     map_units,
@@ -282,12 +282,12 @@ for cell in map_units_cells:
 
 ```python
 # 从 CSV 导入
-from DGGS.ssurgo import parse_ssurgo_csv
+from Dggs.ssurgo import parse_ssurgo_csv
 
 map_units = parse_ssurgo_csv('ssurgo_data.csv')
 
 # 或手动创建
-from DGGS.ssurgo import SSURGOMapUnit
+from Dggs.ssurgo import SSURGOMapUnit
 
 map_unit = SSURGOMapUnit(
     mukey='123456',

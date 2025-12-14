@@ -20,7 +20,7 @@ This repository now includes a **standalone DGGS package** for spatial data disc
 
 ```python
 # Value-based discretization (with data aggregation)
-from DGGS import discretize_aggregate
+from Dggs import discretize_aggregate
 
 sensors = [
     {"lat": 40.7, "lon": -74.0, "temperature": 25, "pm25": 35},
@@ -36,7 +36,7 @@ result = discretize_aggregate(
 # {"89c25a": {"temperature_mean": 25.5, "pm25_max": 42, "count": 2}}
 
 # Geometric discretization (spatial indexing)
-from DGGS import discretize_points
+from Dggs import discretize_points
 
 pois = [
     {"id": "restaurant_1", "lat": 40.7, "lon": -74.0},
@@ -271,14 +271,14 @@ The `graph_tools.py` file offers various tools for working with graphs, includin
 
 ## DGGS (S2) <a name="dggs"></a>
 
-`GraphReasoning.dggs.DGGSS2` provides S2-based discrete global grid utilities with hierarchical cell support, adjacency graphs, and multi-scale relationships inspired by ["The S2 Hierarchical Discrete Global Grid as a Nexus for Data Representation, Integration, and Querying Across Geospatial Knowledge Graphs"](https://doi.org/10.3390/ijgi11090503).
+`GraphReasoning.Dggs.DGGSS2` provides S2-based discrete global grid utilities with hierarchical cell support, adjacency graphs, and multi-scale relationships inspired by ["The S2 Hierarchical Discrete Global Grid as a Nexus for Data Representation, Integration, and Querying Across Geospatial Knowledge Graphs"](https://doi.org/10.3390/ijgi11090503).
 
 ### Basic Usage
 
 Map entities to cells and build an adjacency graph:
 
 ```python
-from GraphReasoning.dggs import DGGSS2
+from GraphReasoning.Dggs import DggsS2
 
 grid = DGGSS2(level=12)
 entities = [

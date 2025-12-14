@@ -13,7 +13,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from DGGS import (
+from Dggs import (
     discretize_polygon_attributes,
 )
 from examples.polygon_examples import (
@@ -28,7 +28,7 @@ from examples.raster_examples import (
     discretized_cdl_to_triplets,
     discretized_agricultural_intensity_to_triplets,
 )
-from DGGS.discretized_to_kg import (
+from Dggs.discretized_to_kg import (
     create_knowledge_graph_from_discretized_data,
     triplets_to_dataframe,
     export_triplets_to_csv,
@@ -238,8 +238,8 @@ def example_6_prepare_for_graphreasoning():
     
     print(f"\n💡 下一步: 使用 GraphReasoning 框架进行推理")
     print(f"""
-from GraphReasoning.graph_generation import make_graph_from_text
-from GraphReasoning.llm_providers import get_generate_fn
+from GraphConstruct.graph_generation import make_graph_from_text
+from Llms.llm_providers import get_generate_fn
 
 # 1. 设置 LLM 提供器
 provider_config = {{"model": "gpt-4", "api_key": "your_key"}}

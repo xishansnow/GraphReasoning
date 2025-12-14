@@ -7,7 +7,7 @@ Fast reference for discretizing point-based spatial data (weather stations, POIs
 ## 🚀 Quick Start
 
 ```python
-from DGGS.discretizer_point import (
+from Dggs.discretizer_point import (
     PointFeature,
     discretize_point_features,
     discretize_point_attributes
@@ -314,7 +314,7 @@ aqi = discretize_point_attributes(
 
 ### Create from Dictionary
 ```python
-from DGGS.discretizer_point import create_point_feature_from_dict
+from Dggs.discretizer_point import create_point_feature_from_dict
 
 data = {
     'feature_id': 'poi_001',
@@ -330,7 +330,7 @@ point = create_point_feature_from_dict(data)
 
 ### Spatial Clustering
 ```python
-from DGGS.discretizer_point import spatial_cluster_points
+from Dggs.discretizer_point import spatial_cluster_points
 
 # Cluster points based on distance
 clusters = spatial_cluster_points(
@@ -342,7 +342,7 @@ clusters = spatial_cluster_points(
 
 ### Calculate Statistics
 ```python
-from DGGS.discretizer_point import calculate_point_statistics
+from Dggs.discretizer_point import calculate_point_statistics
 
 stats = calculate_point_statistics(points, 'temperature')
 # Returns: {mean, std, min, max, median, count}
@@ -350,7 +350,7 @@ stats = calculate_point_statistics(points, 'temperature')
 
 ### Filter Points
 ```python
-from DGGS.discretizer_point import filter_points_by_attribute
+from Dggs.discretizer_point import filter_points_by_attribute
 
 # Filter by condition
 hot_stations = filter_points_by_attribute(

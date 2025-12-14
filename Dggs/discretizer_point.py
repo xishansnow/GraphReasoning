@@ -28,7 +28,7 @@ Architecture:
 
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Callable, Set
 from s2sphere import CellId, LatLng, Cell
-from .dggs import DGGSS2
+from .dggs import DggsS2
 from .spatial_utils import discretize_aggregate
 import statistics
 import math

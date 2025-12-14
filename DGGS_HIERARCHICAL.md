@@ -17,7 +17,7 @@
 基于 S2 Cell 判断两个地理实体之间的拓扑关系：
 
 ```python
-from GraphReasoning.dggs import DGGSS2
+from GraphReasoning.Dggs import DggsS2
 
 grid = DGGSS2(level=12)
 
@@ -169,7 +169,7 @@ for ent in nearby:
 将不同类型空间数据离散到 DGGS（S2 cells）：
 
 ```python
-from GraphReasoning.dggs import (
+from GraphReasoning.Dggs import (
     discretize_points, discretize_paths, discretize_regions_bbox,
     discretize_buffers, discretize_geojson
 )
@@ -204,7 +204,7 @@ cells_geojson = discretize_geojson(geojson_line, level=12, step_km=0.5)
 构建包含实体、网格 cells、同级邻接、父子关系、以及实体间拓扑/方向/距离的综合图：
 
 ```python
-from GraphReasoning.dggs import build_topology_enriched_graph
+from GraphReasoning.Dggs import build_topology_enriched_graph
 import networkx as nx
 
 entities = [
@@ -235,7 +235,7 @@ for u, v, data in KG.edges(data=True):
 分析多个实体之间的所有两两关系：
 
 ```python
-from GraphReasoning.dggs import analyze_entity_relationships
+from GraphReasoning.Dggs import analyze_entity_relationships
 
 relationships = analyze_entity_relationships(
     entities,
@@ -260,7 +260,7 @@ print("Topology distribution:", topology_counts)
 ### 1. 父子关系查询
 
 ```python
-from GraphReasoning.dggs import DGGSS2
+from GraphReasoning.Dggs import DggsS2
 
 grid = DGGSS2(level=12)
 token = grid.latlon_to_token(42.3601, -71.0589, level=12)
@@ -500,7 +500,7 @@ print(f"Refined search space: {len(fine_cells)} level-14 cells")
 
 ```python
 # 构建包含拓扑和方位关系的地理知识图谱
-from GraphReasoning.dggs import analyze_entity_relationships
+from GraphReasoning.Dggs import analyze_entity_relationships
 import networkx as nx
 
 entities = [

@@ -29,7 +29,7 @@ Use cases:
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Callable, Union
 from dataclasses import dataclass
 from s2sphere import CellId
-from .dggs import DGGSS2
+from .dggs import DggsS2
 import statistics
 import math
 

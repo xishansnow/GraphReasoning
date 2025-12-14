@@ -5,7 +5,7 @@
 ### 1. 拓扑关系判断
 
 ```python
-from GraphReasoning.dggs import DGGSS2
+from GraphReasoning.Dggs import DggsS2
 
 grid = DGGSS2(level=12)
 
@@ -71,7 +71,7 @@ nearby = grid.find_entities_in_range(
 ### 5. 批量关系分析
 
 ```python
-from GraphReasoning.dggs import analyze_entity_relationships
+from GraphReasoning.Dggs import analyze_entity_relationships
 
 relationships = analyze_entity_relationships(
     entities,
@@ -151,7 +151,7 @@ for r in nearby:
 ### 示例 4: 构建地理知识图谱
 
 ```python
-from GraphReasoning.dggs import analyze_entity_relationships
+from GraphReasoning.Dggs import analyze_entity_relationships
 import networkx as nx
 
 entities = [

@@ -1,6 +1,6 @@
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 import networkx as nx
-from .dggs import DGGSS2, analyze_entity_relationships
+from .dggs import DggsS2, analyze_entity_relationships
 
 
 def build_topology_enriched_graph(

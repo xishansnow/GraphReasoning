@@ -49,7 +49,7 @@
 
 ### 之前 (Phase 14)
 ```python
-from DGGS import (
+from Dggs import (
     CDLPixel,
     discretize_cdl_crop_distribution,
     discretized_cdl_to_triplets,
@@ -77,7 +77,7 @@ from examples.polygon_examples import (
 )
 
 # 通用 DGGS 功能
-from DGGS import (
+from Dggs import (
     RasterFeature,
     PolygonFeature,
     discretize_raster_features,

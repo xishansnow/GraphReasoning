@@ -7,7 +7,7 @@ Fast reference for discretizing line-based spatial data (roads, rivers, pipeline
 ## 🚀 Quick Start
 
 ```python
-from DGGS.discretizer_polyline import (
+from Dggs.discretizer_polyline import (
     PolylineFeature,
     LineSegment,
     discretize_polyline_features,
@@ -195,7 +195,7 @@ river = PolylineFeature(
 flow = discretize_polyline_flow(river, flow_attribute='discharge_m3s')
 
 # Calculate sinuosity
-from DGGS.discretizer_polyline import calculate_polyline_sinuosity
+from Dggs.discretizer_polyline import calculate_polyline_sinuosity
 sinuosity = calculate_polyline_sinuosity(river)
 # 1.0 = straight, >1.3 = meandering
 ```
@@ -262,7 +262,7 @@ elevation = discretize_polyline_attributes(
 
 ### Create from Dictionary
 ```python
-from DGGS.discretizer_polyline import create_polyline_feature_from_dict
+from Dggs.discretizer_polyline import create_polyline_feature_from_dict
 
 data = {
     'feature_id': 'highway_95',
@@ -285,7 +285,7 @@ feature = create_polyline_feature_from_dict(data)
 
 ### Calculate Sinuosity
 ```python
-from DGGS.discretizer_polyline import calculate_polyline_sinuosity
+from Dggs.discretizer_polyline import calculate_polyline_sinuosity
 
 sinuosity = calculate_polyline_sinuosity(feature)
 # 1.0 = perfectly straight
@@ -296,7 +296,7 @@ sinuosity = calculate_polyline_sinuosity(feature)
 
 ### Merge Networks
 ```python
-from DGGS.discretizer_polyline import merge_polyline_networks
+from Dggs.discretizer_polyline import merge_polyline_networks
 
 merged = merge_polyline_networks(
     [network1, network2],
@@ -433,7 +433,7 @@ is_directed=False
 
 ### With Knowledge Graph
 ```python
-from DGGS.discretizer_polyline import discretize_polyline_features
+from Dggs.discretizer_polyline import discretize_polyline_features
 
 # Discretize roads
 cells = discretize_polyline_features([road1, road2], level=12)

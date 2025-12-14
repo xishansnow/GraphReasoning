@@ -12,7 +12,7 @@ _PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(_PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(_PROJECT_ROOT))
 
-from DGGS.dggs import DGGSS2, analyze_entity_relationships
+from Dggs.dggs import DggsS2, analyze_entity_relationships
 import networkx as nx
 
 

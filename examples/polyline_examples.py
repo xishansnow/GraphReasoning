@@ -17,7 +17,7 @@ Each example shows:
 - Analyzing network topology
 """
 
-from DGGS.discretizer_polyline import (
+from Dggs.discretizer_polyline import (
     PolylineFeature,
     LineSegment,
     discretize_polyline_features,

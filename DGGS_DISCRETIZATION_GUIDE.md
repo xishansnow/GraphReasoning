@@ -11,7 +11,7 @@
 将观测值直接分配给包含该观测点的 DGGS 单元。
 
 ```python
-from DGGS import discretize_direct_assignment
+from Dggs import discretize_direct_assignment
 
 # 气象站观测数据
 observations = [
@@ -40,7 +40,7 @@ result = discretize_direct_assignment(
 当多个观测值落入同一单元时，使用统计函数聚合（均值、总和、最大值等）。
 
 ```python
-from DGGS import discretize_aggregate
+from Dggs import discretize_aggregate
 
 # 多个传感器可能落入同一单元
 sensors = [
@@ -80,7 +80,7 @@ result = discretize_aggregate(
 在多个层级同时聚合数据值，支持跨尺度查询和分析。
 
 ```python
-from DGGS import discretize_multiscale
+from Dggs import discretize_multiscale
 
 # 人口普查数据
 census_data = [
@@ -120,7 +120,7 @@ result = discretize_multiscale(
 使用权重聚合（面积加权、人口加权、置信度加权等）。
 
 ```python
-from DGGS import discretize_weighted_aggregate
+from Dggs import discretize_weighted_aggregate
 
 # 城市区域数据，按面积加权
 districts = [
@@ -162,7 +162,7 @@ pop_weighted = discretize_weighted_aggregate(
 从稀疏观测点插值到连续网格场。
 
 ```python
-from DGGS import discretize_interpolate
+from Dggs import discretize_interpolate
 
 # 稀疏的温度测站
 temp_stations = [
@@ -196,7 +196,7 @@ interpolated = discretize_interpolate(
 ## 完整示例：城市空气质量分析
 
 ```python
-from DGGS import (
+from Dggs import (
     discretize_direct_assignment,
     discretize_aggregate,
     discretize_multiscale,

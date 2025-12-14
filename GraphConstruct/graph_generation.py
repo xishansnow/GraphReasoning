@@ -1,7 +1,13 @@
 ######################################################
 # Imports
 ######################################################
-from GraphReasoning.graph_tools import *
+# Import from GraphReasoning package (graph analysis tools)
+import sys
+from pathlib import Path
+# Add parent directory to path to import from GraphReasoning
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
+from GraphTools import *
 from GraphReasoning.utils import *
 from GraphReasoning.graph_analysis import *
 
@@ -197,7 +203,7 @@ from yachalk import chalk
 sys.path.append("..")
 
 import json
-from GraphReasoning.prompt_templates import render_prompt
+from Llms.prompt_templates import render_prompt
 
 def graphPrompt(input: str, generate, metadata={}, #model="mistral-openorca:latest",
                 repeat_refine=0,verbatim=False,
@@ -778,7 +784,7 @@ def main():
     """Main function to test graph generation functionality."""
     
     # Import provider factory for pluggable LLMs (avoids circular imports)
-    from GraphReasoning.llm_providers import get_generate_fn
+    from Llms.llm_providers import get_generate_fn
     
     # Example text for testing
     test_text = """

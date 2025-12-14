@@ -13,7 +13,7 @@ def main():
     # Test 1: Imports
     print("\n✅ 测试 1/3: 导入模块...")
     try:
-        from DGGS import (
+        from Dggs import (
             SpatialEntity,
             create_knowledge_graph_from_discretized_data,
             export_triplets_to_csv,
